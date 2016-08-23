@@ -1,0 +1,35 @@
+SITE_TITLE: Task stock
+copyright: "&copy; %year% All rights reserved"
+
+# menu
+menu_tasks: Tasks
+menu_projects: Projects
+menu_contacts: Contacts
+menu_new_task: New task
+menu_about: About
+
+# task
+task.project: Project
+task.name: Title
+task.amount: Amount
+task.date: Date
+task.owner: Owner
+task.assignee: Assignee
+task.category: Category
+task.location: Location
+task.description: Description
+task.stateName: State
+
+# email notification
+task.email.changed_by: Changed by
+
+# task states
+task_transiotion_open: Open
+task_transiotion_reject: Reject
+task_transiotion_resolve: Resolve
+task_transiotion_reopen: Reopen
+
+task_status_new: New
+task_status_in_progress: In progress
+task_status_rejected: Rejected
+task_status_resolved: Resolved

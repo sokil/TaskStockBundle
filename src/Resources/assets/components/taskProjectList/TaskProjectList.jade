@@ -1,0 +1,37 @@
+table.table.table-striped.table-hover.top-space
+  tr
+    th Name
+    th.hidden-xs.hidden-sm Code
+    th
+  each project in projects
+    tr
+      td
+        a(href="/#projects/" + project.get('id'))= project.get('name')
+      td.hidden-xs.hidden-sm= project.get('code')
+      td.text-right
+        if project.hasPermission('edit')
+          .visible-xs
+            .visible-xs
+              .btn-group
+                button.btn.btn-default.btn-xs.dropdown-toggle(data-toggle="dropdown")
+                  span.glyphicon.glyphicon-cog
+                  |&nbsp
+                  span.caret
+                ul.dropdown-menu.dropdown-menu-right
+                  li
+                    a(href="/#projects/" + project.get('id'))
+                      = t('Edit')
+                  li
+                    a.delete(data-id=project.get('id'))
+                      = t('Delete')
+          .hidden-xs
+            a.btn.btn-xs.btn-default(href="/#projects/" + project.get('id'))
+              span.glyphicon.glyphicon-pencil
+              |&nbsp;
+              = t('Edit')
+            |&nbsp;
+            a.btn.btn-xs.btn-default.delete(data-id=project.get('id'))
+              span.glyphicon.glyphicon-trash
+              |&nbsp;
+              = t('Delete')
+.pagination-wrap

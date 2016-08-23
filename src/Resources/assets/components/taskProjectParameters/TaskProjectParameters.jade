@@ -1,0 +1,26 @@
+form(action=action, method="POST")
+  .form-group
+    label= t('task_project_parameters.name')
+    input.form-control(name="name", value = project.get('name') ? project.get('name') : null)
+  .form-group
+    label= t('task_project_parameters.code')
+    input.form-control(name="code", value = project.get('code'))
+  .form-group
+    label= t('task_project_parameters.desciption')
+    textarea.form-control(name="description", rows="5")= project.get('description') ? project.get('description') : null
+  .form-group
+    label= t('task_project_parameters.notification_schema')
+    select.form-control(name="notificationSchemaId", value = project.get('notificationSchemaId'))
+      option(value='')= t('task_project_parameters.no_notification_schema')
+      each schema in notificationSchemas
+        - var selected = project.get('notificationSchemaId') === schema.get('id')
+        option(value=schema.get('id'), selected=selected)= schema.get('name')
+  .form-group
+    label= t('task_project_parameters.state_schema')
+    select.form-control(name="stateSchemaId", value = project.get('stateSchemaId'))
+      each schema in project.stateSchemas
+        - var selected = project.get('stateSchemaId') === schema['id']
+        option(value=schema['id'], selected=selected)= schema['name']
+  .form-group
+    input.btn.btn-success(type="submit", value=t('Save'))
+    span.status

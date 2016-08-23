@@ -1,0 +1,31 @@
+{% import "@FrontendBundle/Resources/views/macro.html.twig" as frontend %}
+{% import "@TaskStockBundle/Resources/views/Spa/macro.html.twig" as taskSpa %}
+<!DOCTYPE html>
+<html>
+<head>
+    {{ frontend.commonCssResources() }}
+    {{ taskSpa.cssResources() }}
+</head>
+<body>
+<div class="container">
+    <div id="content"></div>
+</div>
+<div id="popup"></div>
+{{ frontend.commonJsResources() }}
+{{ frontend.spaJsResources() }}
+{{ taskSpa.jsResources() }}
+<script type="text/javascript">
+    (function() {
+        // app options
+        var options = {{ applicationData|json_encode|raw }};
+        // router
+        options.router = new TaskStockRouter();
+        // container
+        options.container = new Container(TaskStockServiceDefinition);
+        // start app
+        window.app = new Application(options);
+        window.app.start();
+    })();
+</script>
+</body>
+</html>

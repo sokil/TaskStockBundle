@@ -1,0 +1,130 @@
+.block.top-space
+  .title
+    = t('task.task') + " #" + task.get('id') + " "
+      .label.label-primary#taskStateLabel= task.get('state').label
+    .pull-right
+        |&nbsp;
+        span#taskStateSwitcher
+      .pull-right
+        .visible-xs
+          .btn-group
+            button.btn.btn-default.btn-xs.dropdown-toggle(data-toggle="dropdown")
+              span.glyphicon.glyphicon-cog
+              |&nbsp
+              span.caret
+            ul.dropdown-menu.dropdown-menu-right
+              li
+                a(href="/#tasks/" + task.id + "/edit")
+                  = t('Edit')
+              li
+                a.deleteTask
+                  = t('Delete')
+        .hidden-xs
+          a.btn.btn-default.btn-xs(href="/#tasks/" + task.id + "/edit")
+            span.glyphicon.glyphicon-pencil
+            |&nbsp
+            = t('Edit')
+          |&nbsp;
+          a.btn.btn-default.btn-xs.deleteTask
+            span.glyphicon.glyphicon-trash
+            |&nbsp
+            = t('Delete')
+  .content
+    h2= task.get('name')
+    dl.dl-horizontal
+      if task.get('parent')
+        dt= t('Parent')
+        dd
+          a(href="/#tasks/" + task.get('parent').id)= task.get('parent').name
+      if task.get('project')
+        dt= t('task.project')
+        dd= task.get('project').name
+      dt= t('task.createdAt')
+      dd= task.get('date')
+      dt= t('task.owner')
+      dd
+        img.img-circle(src=task.get('owner').gravatar + "?s=20&d=mm")
+        |&nbsp;
+        a(href="/#users/" + task.get('owner').id)= task.get('owner').name
+      if task.get('assignee')
+        dt= t('task.assignee')
+        dd
+          img.img-circle(src=task.get('assignee').gravatar + "?s=20&d=mm")
+          |&nbsp;
+          a(href="/#users/" + task.get('assignee').id)= task.get('assignee').name
+
+.block.top-space
+  .title= t('task.description')
+  .content!= task.get('description')
+
+if (task.get('permissions').viewAttachments === true)
+  .block.top-space
+    .title
+      = t('task.attachments')
+      a.btn-upload.btn.btn-success.btn-xs.pull-right#newAttachment
+        input(type="file", id="attachmentButton")
+        label(for="attachmentButton")
+          span.glyphicon.glyphicon-upload
+          != "&nbsp;" + t('task.newAttachment')
+    .content
+      #progress
+    .content.no-border
+      #attachments
+
+.block.top-space
+  .title
+    = t('task.subtasks')
+    a.btn.btn-success.btn-xs.pull-right#newSubtask
+      span.glyphicon.glyphicon-plus
+      != "&nbsp;" + t('task.newSubtask')
+  .content
+    table.table.table-striped.table-hover
+      each subtask in task.get('subtasks')
+        tr
+          td
+            a(href="/#tasks/" + subtask.id)= subtask.name
+          td
+            .label.label-primary= subtask.state.label
+          td.hidden-xs
+            if subtask.assignee
+              a(href="/#users/" + subtask.assignee.id)
+                img.img-circle(src=subtask.assignee.gravatar + "?s=20&d=mm")
+              |&nbsp;
+              a(href="/#users/" + subtask.assignee.id)
+                = subtask.assignee.name
+            else
+              = t('task.unassigned')
+          td.text-right
+            .hidden-xs
+              a.btn.btn-default.btn-xs.editSubTask(data-id=subtask.id)
+                span.glyphicon.glyphicon-pencil
+                |&nbsp
+                = t('Edit')
+              | &nbsp;
+              a.btn.btn-default.btn-xs.deleteSubTask(data-id=subtask.id)
+                span.glyphicon.glyphicon-trash
+                |&nbsp
+                = t('Delete')
+            .visible-xs
+              .btn-group
+                button.btn.btn-default.btn-xs.dropdown-toggle(data-toggle="dropdown")
+                  span.glyphicon.glyphicon-cog
+                  |&nbsp
+                  span.caret
+                ul.dropdown-menu.dropdown-menu-right
+                  li
+                    a.editSubTask(data-id=subtask.id)= t('Edit')
+                  li
+                    a.deleteSubTask(data-id=subtask.id)= t('Delete')
+
+.block.top-space
+  .title
+    =t('task.comments')
+    .btn-toolbar.pull-right
+      a.btn.btn-success.btn-xs#newComment
+        span.glyphicon.glyphicon-plus
+        != "&nbsp;" + t('task.newComment')
+      a.btn.btn-default.btn-xs.glyphicon(data-comment-direction=commentDirection, class=(commentDirection === "asc" ? 'glyphicon-chevron-up' : 'glyphicon-chevron-down'))
+  .content
+    #newCommentForm
+    #comments

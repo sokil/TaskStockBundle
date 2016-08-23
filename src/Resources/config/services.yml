@@ -1,0 +1,88 @@
+parameters:
+  notification.message.email.taskChange.class: Sokil\TaskStockBundle\Notification\Message\Email\TaskChangeMessage
+
+services:
+    ################################################
+    #             State                            #
+    ################################################
+    task_stock.task_state_handler_builder:
+      class: Sokil\TaskStockBundle\State\TaskStateHandlerBuilder
+      arguments:
+        - ~
+
+    ################################################
+    #             Single page application          #
+    ################################################
+    task_stock.spa.controller:
+      class: Sokil\FrontendBundle\Controller\IndexController
+      arguments:
+        - 'TaskStockBundle:Spa:index.html.twig'
+        - '@task_stock.spa.app_data'
+      calls:
+        - [setContainer, ["@service_container"]]
+
+    task_stock.spa.app_data:
+      class: Sokil\FrontendBundle\Spa\ApplicationData
+
+    task_stock.spa.app_data_provider.locale:
+      class: Sokil\FrontendBundle\Spa\LocaleApplicationDataProvider
+      arguments:
+        - @request_stack
+      tags:
+        - {name: frontend.spa.app_data_provider, app_data: task_stock.spa.app_data}
+
+    task_stock.spa.app_data_provider.container_parameters:
+      class: Sokil\FrontendBundle\Spa\ParameterApplicationDataProvider
+      arguments:
+        - '@service_container'
+        - ["locales"]
+      tags:
+        - {name: frontend.spa.app_data_provider, app_data: task_stock.spa.app_data}
+
+    task_stock.spa.app_data_provider.csrf:
+      class: Sokil\FrontendBundle\Spa\CsrfApplicationDataProvider
+      arguments:
+        - '@security.csrf.token_manager'
+        - common
+      tags:
+        - {name: frontend.spa.app_data_provider, app_data: task_stock.spa.app_data}
+
+    ################################################
+    #            Notifications                     #
+    ################################################
+    task_stock.task_notification_listener:
+        class: Sokil\TaskStockBundle\EventListener\TaskNotificationListener
+        arguments:
+            - '@notification.schema_provider'
+            - '@notification.transport_provider'
+            - '@notification.message_builder'
+        tags:
+            - {name: kernel.event_listener, event: task.change}
+
+    ################################################
+    #             Voters                           #
+    ################################################
+    task_stock.voter.task_voter:
+        class: Sokil\TaskStockBundle\Voter\TaskVoter
+        arguments:
+          - @security.access.role_hierarchy_voter
+          - @task_stock.voter.task_project_voter
+        tags:
+           - { name: security.voter }
+
+    task_stock.voter.task_project_voter:
+        class: Sokil\TaskStockBundle\Voter\TaskProjectVoter
+        arguments:
+          - @security.access.role_hierarchy_voter
+        tags:
+           - { name: security.voter }
+
+    ################################################
+    #             Others                           #
+    ################################################
+
+    task_stock.validation_errors_converter:
+        class: Sokil\Converter\ValidationErrorsConverter
+
+    task_stock.attachments_upload_handler:
+        class: Sokil\Upload\Handler

@@ -1,0 +1,34 @@
+table.table.table-hover.table-striped
+  for permission in permissions
+    tr
+      td
+        a(href="/#users/" + permission.user.id)
+          img.img-circle(src=permission.user.getGravatarUrl(20))
+          = " " + permission.user.get('name')
+      td
+        = _.keys(_.pick(permission.get('roles'), function(v) { return v === true; })).join(', ')
+      td.text-right
+        .visible-xs
+          .visible-xs
+            .btn-group
+              button.btn.btn-default.btn-xs.dropdown-toggle(data-toggle="dropdown")
+                span.glyphicon.glyphicon-cog
+                |&nbsp
+                span.caret
+              ul.dropdown-menu.dropdown-menu-right
+                li
+                  a.edit(data-id=permission.get('id'))
+                    = t('Edit')
+                li
+                  a.delete(data-id=permission.get('id'))
+                    = t('Delete')
+        .hidden-xs
+          a.btn.btn-xs.btn-default.edit(data-id=permission.get('id'))
+            span.glyphicon.glyphicon-pencil
+            |&nbsp;
+            = t('Edit')
+          |&nbsp;
+          a.btn.btn-xs.btn-default.delete(data-id=permission.get('id'))
+            span.glyphicon.glyphicon-trash
+            |&nbsp;
+            = t('Delete')

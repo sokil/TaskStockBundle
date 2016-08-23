@@ -1,0 +1,17 @@
+.block.top-space
+  .title
+    = project.get('name') || t('New project')
+  .content
+    if project.hasPermission('edit')
+      ul.nav.nav-pills.bottom-space
+        li
+          a(data-target="#parameters", data-toggle="tab")= t('Parameters')
+        li
+          a(data-target="#permissions", data-toggle="tab")= t('Permissions')
+    .tab-content
+      .tab-pane.active#parameters
+        .wrapper
+      .tab-pane#permissions
+        .btn-group.bottom-space
+          .btn.btn-success.addUser= t('Add user')
+        .wrapper

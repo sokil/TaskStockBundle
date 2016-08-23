@@ -1,0 +1,3 @@
+ul.media-list
+  each comment in comments
+    != app.render('TaskComment', {comment: comment, taskId: taskId})

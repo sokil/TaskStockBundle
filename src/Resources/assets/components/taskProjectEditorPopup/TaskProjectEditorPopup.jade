@@ -1,0 +1,11 @@
+form(action=action, method="POST")
+  .form-group
+    label= t('task_project_editor_popup.name')
+    input.form-control(name="name", value = project.get('name') ? project.get('name') : null)
+  .form-group
+    label= t('task_project_editor_popup.code')
+    input.form-control(name="code", value = project.get('code'))
+  .form-group
+    label= t('task_project_editor_popup.desciption')
+    textarea.form-control(name="description", rows="5")= project.get('description') ? project.get('description') : null
+.status

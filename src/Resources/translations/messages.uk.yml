@@ -1,0 +1,59 @@
+SITE_TITLE: Трекер
+copyright: "&copy; %year% All rights reserved"
+
+# Main menu
+Projects: Проекти
+
+Tasks: Задачі
+Task List: Список задач
+Task Categories: Категорії
+
+Administration: Адміністрування
+Account management: Керування аккаунтами
+Users: Користувачі
+Groups: Групи
+
+Content management: Керування контентом
+Pages: Сторінки
+
+Task management: Керування задачами
+Task Categories: Категорії задач
+New task: Нова задача
+
+menu_tasks: Задачі
+menu_projects: Проекти
+menu_contacts: Контакти
+menu_new_task: Нова задача
+menu_about: Про нас
+
+Profile: Профіль
+Logout: Вийти
+
+Sign up: Зареєструватись
+Sign in: Ввійти
+
+# task
+task.project: Проект
+task.name: Назва
+task.amount: Вартість
+task.date: Дата
+task.owner: Власник задачі
+task.assignee: Виконевець
+task.category: Категорія
+task.location: Розташування
+task.description: Опис
+task.stateName: Стан
+
+# email notification
+task.email.changed_by: Змінено
+
+# task states
+task_transiotion_open: Відкрити
+task_transiotion_reject: Відхилити
+task_transiotion_resolve: Реалізовано
+task_transiotion_reopen: Перевідкрити
+
+task_status_new: Новий
+task_status_in_progress: В роботі
+task_status_rejected: Відхилено
+task_status_resolved: Реалізовано

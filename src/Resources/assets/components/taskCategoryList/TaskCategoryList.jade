@@ -1,0 +1,19 @@
+table.table.table-striped.table-hover.top-space
+    col
+    col
+    col
+    col(width="100px")
+    tr
+        th Id
+        th Name
+        th.hidden-xs.hidden-sm Url
+        th
+    each category in categories
+        tr
+            td= category.get('id')
+            td= category.get('name')
+            td.hidden-xs.hidden-sm= category.get('url')
+            td
+                a.btn.btn-xs.btn-success.edit(data-id=category.get('id')) Edit
+                | 
+                a.btn.btn-xs.btn-danger.delete(data-id=category.get('id')) Delete

@@ -1,0 +1,14 @@
+form(action=action, method="POST")
+  .form-group
+    label= t('User')
+    input(type="hidden", name="user", value=permission.get('user') ? permission.get('user').id : "")
+    input.form-control(data-user, name="name", value = permission.get('user') ? permission.get('user').name : null)
+  .form-group
+    label= t('Roles')
+    each role in roles
+      - var checked = permission.get('roles') ? permission.get('roles')[role.name] : false
+      .checkbox
+        label
+          input(data-roles, type="checkbox", name="roles[]", value=role.name, checked=checked)
+          = role.title
+.status

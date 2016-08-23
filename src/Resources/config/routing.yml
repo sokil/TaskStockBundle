@@ -1,0 +1,8 @@
+task_stock:
+    resource: @TaskStockBundle/Controller/
+    type:     annotation
+
+task_stock.spa_index:
+  path: /tasks/app
+  defaults:
+    _controller: task_stock.controller.spa:indexAction

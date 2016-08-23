@@ -1,0 +1,12 @@
+li.media.bottom-space
+  .media-left
+    a(href="/#users/" + comment.get('author').id)
+      img.img-circle.media-object(src=comment.get('author').gravatar + "?s=40&d=mm")
+  .media-body
+    .media-heading
+      a(href="/#users/" + comment.get('author').id)= comment.get('author').name
+      |&nbsp;
+      span.hidden-xs.hidden-sm= moment(comment.getDate()).format('LLLL')
+      |&nbsp;
+      span(title=moment(comment.getDate()).format('LLLL'))= "(" + moment(comment.getDate()).fromNow() + ")"
+    = comment.get('text')

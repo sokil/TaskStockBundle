@@ -1,0 +1,18 @@
+form(action=action, method="POST")
+  .form-group
+    label Url
+    input.form-control(name="url", value = category.get('url'))
+  ul.nav.nav-pills.bottom-space
+    each locale in app.locales
+      li(class=(locale === app.locale) ? "active" : null)
+        a(href="#" + locale, data-toggle="pill")= locale
+  .tab-content
+    each locale in app.locales
+      .tab-pane(id=locale, class=(locale === app.locale) ? "active" : null)
+        .form-group
+          label Name
+          input.form-control(name="name[" + locale + "]", value = category.get('name') ? category.get('name')[locale] : null)
+        .form-group
+          label Description
+          textarea.form-control(name="description[" + locale + "]", rows="5")= category.get('description') ? category.get('description')[locale] : null
+.status

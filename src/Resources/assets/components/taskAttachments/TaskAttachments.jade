@@ -1,0 +1,14 @@
+table.table.table-striped.table-hover
+  each attachment in attachments
+    tr(data-id=attachment.get('id'))
+      td
+        a(href=attachment.get('path'))= attachment.get('name')
+      td
+        = attachment.getSize()
+      td.hidden-xs
+        = moment(attachment.getCreatedAt()).format('LLLL') + " (" + moment(attachment.getCreatedAt()).fromNow() + ")"
+      td.text-right
+        .btn.btn-default.btn-xs.delete
+          .glyphicon.glyphicon-trash
+          |&nbsp
+          = t('Delete')

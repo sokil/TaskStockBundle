@@ -1,0 +1,22 @@
+{% extends "TaskStockBundle::layout.mail.html.twig" %}
+
+{% block title %}
+    <img src="{{ user.getGravatarUrl(30) }}" height="30" style="border-radius: 15px; vertical-align: top;">
+    {% trans %}task.email.changed_by{% endtrans %}
+    <a href="{{ url('task_stock.spa_index') ~ '#users/' ~ user.id }}" style="color: #005AAA; text-decoration: none;" target="_blank">{{ user.name }}</a>
+{% endblock %}
+
+{% block content %}
+    <div style="margin-bottom: 10px; font-size: 25px;">
+        <a href="{{ url('task_stock.spa_index') ~ '#tasks/' ~ task.id }}" style="text-decoration: none; color: #005AAA;" target="_blank">{{ task.name  }}</a>
+    </div>
+    <table border="0" cellpadding="5" cellspacing="0">
+        {% for fieldName, change in changes %}
+            <tr>
+                <td valign="top" style="color: #777777;">{{ ('task.' ~ fieldName) | trans }}:</td>
+                <td valign="top" style="">{{ change['diff'] | raw }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

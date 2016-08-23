@@ -1,0 +1,59 @@
+SITE_TITLE: Трекер
+copyright: "&copy; %year% All rights reserved"
+
+# main menu
+Projects: Проекты
+
+Tasks: Задачи
+Task List: Список задач
+Task Categories: Категории
+
+Administration: Администрирование
+Account management: Управление аккаунтами
+Users: Пользователи
+Groups: Группы
+
+Content management: Управление контентом
+Pages: Страницы
+
+Task management: Укрпаление задачами
+Task Categories: Категории задач
+New task: Новая задача
+
+menu_tasks: Задачи
+menu_projects: Проекты
+menu_contacts: Контакты
+menu_new_task: Новая задача
+menu_about: О нас
+
+Profile: Профиль
+Logout: Выйти
+
+Sign up: Регистрация
+Sign in: Вход
+
+# task
+task.project: Проект
+task.name: Название
+task.amount: Стоимость
+task.date: Дата
+task.owner: Владелец задачи
+task.assignee: Исполнитель
+task.category: Категория
+task.location: Расположение
+task.description: Описание
+task.stateName: Состояние
+
+# email notification
+task.email.changed_by: Изменено
+
+# task states
+task_transiotion_open: Открыть
+task_transiotion_reject: Отклонить
+task_transiotion_resolve: Реализовано
+task_transiotion_reopen: Переоткрыть
+
+task_status_new: Новый
+task_status_in_progress: В работе
+task_status_rejected: Отклонено
+task_status_resolved: Реализовано
