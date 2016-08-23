@@ -1,6 +1,6 @@
 {
-    "name": "sokil/frontend-bundle",
-    "description": "Frontend components to quick start frontend app",
+    "name": "sokil/task-stock-bundle",
+    "description": "Task tracking",
     "license": "MIT",
     "authors": [
         {
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Sokil\\FrontendBundle\\": ["src/", "tests/"]
+            "Sokil\\TaskStockBundle\\": ["src/", "tests/"]
         }
     }
 }
