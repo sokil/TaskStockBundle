@@ -11,7 +11,7 @@ use Sokil\NotificationBundle\Message\MessageInterface;
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\UserBundle\Entity\User;
 
-use Sokil\NotificationBundle\Message\ChangedValue;
+use Sokil\TaskStockBundle\Common\Dto\ChangedValue;
 
 class TaskChangeMessageFixture implements MessageFixtureInterface
 {

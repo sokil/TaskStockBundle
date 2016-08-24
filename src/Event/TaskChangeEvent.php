@@ -7,7 +7,7 @@ use Sokil\UserBundle\Entity\User;
 use Symfony\Component\EventDispatcher\Event;
 use Doctrine\Common\PropertyChangedListener;
 
-use Sokil\NotificationBundle\Message\ChangedValue;
+use Sokil\TaskStockBundle\Common\Dto\ChangedValue;
 
 class TaskChangeEvent extends Event implements PropertyChangedListener
 {

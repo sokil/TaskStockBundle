@@ -10,7 +10,7 @@ use Sokil\NotificationBundle\Message\TranslatorAwareInterface;
 use Sokil\TaskStockBundle\Common\Localization\LocalizedInterface;
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\UserBundle\Entity\User;
-use Sokil\NotificationBundle\Message\ChangedValue;
+use Sokil\TaskStockBundle\Common\Dto\ChangedValue;
 use Sokil\State\State;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
