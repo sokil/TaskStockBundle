@@ -7,13 +7,9 @@ use Sokil\TaskStockBundle\Entity\TaskCategoryLocalization;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class TaskCategoriesController extends Controller
 {

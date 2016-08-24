@@ -9,12 +9,7 @@ use Sokil\FileStorageBundle\Entity\File;
 use Sokil\UserBundle\Entity\User;
 
 use Symfony\Component\Validator\Constraints as Assert;
-
-use Sokil\State\MachineBuilder;
-use Sokil\State\Configuration\YamlConfiguration;
-use Sokil\State\State;
-
-use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 
 use Doctrine\Common\NotifyPropertyChanged;
@@ -118,11 +113,6 @@ class Task implements NotifyPropertyChanged
      * @Assert\NotBlank
      */
     protected $stateName;
-
-    /**
-     * @var \Sokil\State\Machine
-     */
-    private $stateMachine;
 
     /**
      * @ORM\Column(type="boolean")
@@ -433,7 +423,7 @@ class Task implements NotifyPropertyChanged
     /**
      * Get owner
      *
-     * @return User
+     * @return Task
      */
     public function getOwner()
     {
@@ -459,7 +449,7 @@ class Task implements NotifyPropertyChanged
     /**
      * Get owner
      *
-     * @return User
+     * @return Task
      */
     public function getAssignee()
     {
@@ -485,7 +475,7 @@ class Task implements NotifyPropertyChanged
 
     /**
      * Delete user
-     * @return User
+     * @return Task
      */
     public function delete()
     {
@@ -495,7 +485,7 @@ class Task implements NotifyPropertyChanged
 
     /**
      * Undelete user
-     * @return User
+     * @return Task
      */
     public function undelete()
     {

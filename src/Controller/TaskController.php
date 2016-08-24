@@ -5,17 +5,12 @@ namespace Sokil\TaskStockBundle\Controller;
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\TaskStockBundle\Event\TaskChangeEvent;
 use Sokil\TaskStockBundle\Voter\TaskVoter;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class TaskController extends Controller

@@ -2,18 +2,14 @@
 
 namespace Sokil\TaskStockBundle\Controller;
 
-use Sokil\TaskStockBundle\Entity\TaskProject;
 use Sokil\TaskStockBundle\Entity\TaskProjectPermission;
 use Sokil\TaskStockBundle\Voter\TaskProjectVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class TaskProjectPermissionsController extends Controller

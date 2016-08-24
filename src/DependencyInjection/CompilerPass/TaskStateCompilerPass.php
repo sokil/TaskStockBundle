@@ -2,10 +2,8 @@
 
 namespace Sokil\TaskStockBundle\DependencyInjection\CompilerPass;
 
-use Sokil\TaskStockBundle\State\TaskStateHandlerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\Yaml\Parser as YamlParser;
 
 class TaskStateCompilerPass implements CompilerPassInterface
