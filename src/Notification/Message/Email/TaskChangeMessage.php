@@ -89,10 +89,11 @@ class TaskChangeMessage implements
                 foreach ($changeSerialized as $key => $value) {
                     if ($value instanceof \DateTime) {
                         $changeSerialized[$key] = $value->format('d.m.Y H:i:s');
-                    } elseif ($value instanceof State) {
-                        $changeSerialized[$key] = $this
-                            ->translator
-                            ->trans($value->getMetadata('label'));
+                    } elseif ($key === 'stateName') {
+//                        $state = null;
+//                        $changeSerialized[$key] = $this
+//                            ->translator
+//                            ->trans($state->getMetadata('label'));
                     } elseif ($value instanceof LocalizedInterface) {
                         $changeSerialized[$key] = $value->getLocalization($lang);
                     }
