@@ -9,7 +9,7 @@ Add dependency to composer:
 composer.phar reequire sokil/task-stock-bundle
 ```
 
-Add dundle to AppKernel:
+Add bundle to AppKernel:
 ```php
 <?php
 
