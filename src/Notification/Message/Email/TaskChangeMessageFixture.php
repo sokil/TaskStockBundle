@@ -2,6 +2,7 @@
 
 namespace Sokil\TaskStockBundle\Notification\Message\Email;
 
+use Sokil\Diff\Change;
 use Sokil\NotificationBundle\Message\MessageFixtureInterface;
 use Sokil\State\State;
 use Sokil\TaskStockBundle\Entity\TaskCategory;
@@ -10,8 +11,6 @@ use Sokil\NotificationBundle\Message\MessageInterface;
 
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\UserBundle\Entity\User;
-
-use Sokil\TaskStockBundle\Common\Dto\ChangedValue;
 
 class TaskChangeMessageFixture implements MessageFixtureInterface
 {
@@ -64,16 +63,16 @@ class TaskChangeMessageFixture implements MessageFixtureInterface
 
         // changes
         $changes = [
-            'project' => new ChangedValue('Old project', 'New project'),
-            'name' => new ChangedValue('Old task name', 'New task name'),
-            'amount' => new ChangedValue(10, 42.2),
-            'date' => new ChangedValue(new \DateTime('2014-10-14 00:00:00'), new \DateTime('2014-10-14 00:00:00')),
-            'owner' => new ChangedValue(null, $user),
-            'assignee' => new ChangedValue(null, $user),
-            'category' => new ChangedValue($oldCategory, $newCategory),
-            'location' => new ChangedValue('Old location', 'New location'),
-            'description' => new ChangedValue('Old task description', 'New task description'),
-            'stateName' => new ChangedValue(
+            'project' => new Change('Old project', 'New project'),
+            'name' => new Change('Old task name', 'New task name'),
+            'amount' => new Change(10, 42.2),
+            'date' => new Change(new \DateTime('2014-10-14 00:00:00'), new \DateTime('2014-10-14 00:00:00')),
+            'owner' => new Change(null, $user),
+            'assignee' => new Change(null, $user),
+            'category' => new Change($oldCategory, $newCategory),
+            'location' => new Change('Old location', 'New location'),
+            'description' => new Change('Old task description', 'New task description'),
+            'stateName' => new Change(
                 new State('in_progress', ['label' => 'task_status_in_progress']),
                 new State('resolved', ['label' => 'task_status_resolved'])
             ),

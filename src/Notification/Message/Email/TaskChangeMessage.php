@@ -2,6 +2,7 @@
 
 namespace Sokil\TaskStockBundle\Notification\Message\Email;
 
+use Sokil\Diff\Change;
 use Sokil\Diff\Renderer;
 use Sokil\NotificationBundle\Message\DiffRendererAwareInterface;
 use Sokil\NotificationBundle\Message\EmailMessageInterface;
@@ -10,7 +11,6 @@ use Sokil\NotificationBundle\Message\TranslatorAwareInterface;
 use Sokil\TaskStockBundle\Common\Localization\LocalizedInterface;
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\UserBundle\Entity\User;
-use Sokil\TaskStockBundle\Common\Dto\ChangedValue;
 use Sokil\State\State;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -56,7 +56,7 @@ class TaskChangeMessage implements
     }
 
     /**
-     * @param array $changes array of \Sokil\TaskStockBundle\Dto\ChangedValue instances
+     * @param Change[] $changes array of changes
      * @return $this
      */
     public function setChanges(array $changes)
@@ -77,7 +77,7 @@ class TaskChangeMessage implements
         return $this->templateEngine->render('TaskStockBundle:EmailMessageProvider:task.change.html.twig', [
             'task' => $this->task,
             'user' => $this->user,
-            'changes' => array_map(function(ChangedValue $change) use ($lang) {
+            'changes' => array_map(function(Change $change) use ($lang) {
                 $oldValue = $change->getOldValue();
                 $newValue = $change->getNewValue();
 

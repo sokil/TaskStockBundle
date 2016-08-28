@@ -7,8 +7,6 @@ use Sokil\UserBundle\Entity\User;
 use Symfony\Component\EventDispatcher\Event;
 use Doctrine\Common\PropertyChangedListener;
 
-use Sokil\TaskStockBundle\Common\Dto\ChangedValue;
-
 class TaskChangeEvent extends Event implements PropertyChangedListener
 {
     private $tasks = [];
@@ -59,6 +57,6 @@ class TaskChangeEvent extends Event implements PropertyChangedListener
         }
 
         $this->tasks[$sender->getId()] = $sender;
-        $this->changes[$sender->getId()][$propertyName] = new ChangedValue($oldValue, $newValue);
+        $this->changes[$sender->getId()][$propertyName] = new Change($oldValue, $newValue);
     }
 }
