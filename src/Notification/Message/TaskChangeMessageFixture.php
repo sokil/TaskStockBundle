@@ -1,6 +1,6 @@
 <?php
 
-namespace Sokil\TaskStockBundle\Notification\Message\Email;
+namespace Sokil\TaskStockBundle\Notification\Message;
 
 use Sokil\Diff\Change;
 use Sokil\NotificationBundle\Message\MessageFixtureInterface;

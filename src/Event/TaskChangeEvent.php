@@ -2,6 +2,7 @@
 
 namespace Sokil\TaskStockBundle\Event;
 
+use Sokil\Diff\Change;
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\UserBundle\Entity\User;
 use Symfony\Component\EventDispatcher\Event;
@@ -22,13 +23,16 @@ class TaskChangeEvent extends Event implements PropertyChangedListener
     private $user;
 
     /**
-     * @return array of changes fields
+     * @return Change[][] changes fields
      */
     public function getChanges()
     {
         return $this->changes;
     }
 
+    /**
+     * @return Task[]
+     */
     public function getTasks()
     {
         return $this->tasks;

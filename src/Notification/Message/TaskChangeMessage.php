@@ -1,30 +1,33 @@
 <?php
 
-namespace Sokil\TaskStockBundle\Notification\Message\Email;
+namespace Sokil\TaskStockBundle\Notification\Message;
 
 use Sokil\Diff\Change;
 use Sokil\Diff\Renderer;
-use Sokil\NotificationBundle\Message\DiffRendererAwareInterface;
 use Sokil\NotificationBundle\Message\EmailMessageInterface;
-use Sokil\NotificationBundle\Message\TemplateAwareInterface;
-use Sokil\NotificationBundle\Message\TranslatorAwareInterface;
 use Sokil\TaskStockBundle\Common\Localization\LocalizedInterface;
 use Sokil\TaskStockBundle\Entity\Task;
+use Sokil\TaskStockBundle\State\TaskStateHandler;
 use Sokil\UserBundle\Entity\User;
 use Sokil\State\State;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class TaskChangeMessage implements
-    EmailMessageInterface,
-    DiffRendererAwareInterface,
-    TemplateAwareInterface,
-    TranslatorAwareInterface
+class TaskChangeMessage implements EmailMessageInterface
 {
+    /**
+     * @var User
+     */
     private $user;
 
+    /**
+     * @var Task
+     */
     private $task;
 
+    /**
+     * @var Change[]
+     */
     private $changes;
 
     /**
@@ -43,26 +46,42 @@ class TaskChangeMessage implements
      */
     protected $textDiffRenderer;
 
-    public function setUser(User $user)
-    {
-        $this->user = $user;
-        return $this;
-    }
+    /**
+     * @var TaskStateHandler
+     */
+    protected $taskStateHandler;
 
-    public function setTask(Task $task)
-    {
-        $this->task = $task;
-        return $this;
-    }
 
     /**
+     * @param EngineInterface $engine
+     * @param TranslatorInterface $translator
+     * @param Renderer $renderer
+     * @param TaskStateHandler $taskStateHandler
+     * @param User $user
+     * @param Task $task
      * @param Change[] $changes array of changes
-     * @return $this
      */
-    public function setChanges(array $changes)
-    {
+    public function __construct(
+        EngineInterface $engine,
+        TranslatorInterface $translator,
+        Renderer $renderer,
+        TaskStateHandler $taskStateHandler,
+        User $user,
+        Task $task,
+        array $changes
+    ) {
+        $this->templateEngine = $engine;
+        $this->translator = $translator;
+        $this->textDiffRenderer = $renderer;
+        $this->taskStateHandler = $taskStateHandler;
+        $this->user = $user;
+        $this->task = $task;
         $this->changes = $changes;
-        return $this;
+    }
+
+    public function getTranslator()
+    {
+        return $this->translator;
     }
 
     public function getSubject()
@@ -109,32 +128,5 @@ class TaskChangeMessage implements
                 return $changeSerialized;
             }, $this->changes),
         ]);
-    }
-
-    /**
-     * @param EngineInterface $engine
-     * @return $this
-     */
-    public function setTemplateEngine(EngineInterface $engine)
-    {
-        $this->templateEngine = $engine;
-        return $this;
-    }
-
-    public function setTranslator(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-        return $this;
-    }
-
-    public function getTranslator()
-    {
-        return $this->translator;
-    }
-
-    public function setDiffRenderer(Renderer $renderer)
-    {
-        $this->textDiffRenderer = $renderer;
-        return $this;
     }
 }

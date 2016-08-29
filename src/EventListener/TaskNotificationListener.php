@@ -2,9 +2,10 @@
 
 namespace Sokil\TaskStockBundle\EventListener;
 
-use Sokil\NotificationBundle\MessageBuilder;
 use Sokil\NotificationBundle\Exception\NotificationException;
+use Sokil\NotificationBundle\MessageBuilder\BuilderCollection;
 use Sokil\NotificationBundle\Schema\ConfigurationProvider;
+use Sokil\TaskStockBundle\Notification\Message\TaskChangeMessageBuilder;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Sokil\TaskStockBundle\Event\TaskChangeEvent;
 use Sokil\NotificationBundle\TransportProvider;
@@ -16,18 +17,24 @@ class TaskNotificationListener implements EventSubscriberInterface
      */
     private $schemaConfigurationProvider;
 
+    /**
+     * @var TransportProvider
+     */
     private $transportProvider;
 
-    private $messageBuilder;
+    /**
+     * @var BuilderCollection
+     */
+    private $messageBuilderCollection;
 
     public function __construct(
         ConfigurationProvider $schemaProvider,
         TransportProvider $transportProvider,
-        MessageBuilder $messageBuilder
+        BuilderCollection $messageBuilderCollection
     ) {
         $this->schemaConfigurationProvider = $schemaProvider;
         $this->transportProvider = $transportProvider;
-        $this->messageBuilder = $messageBuilder;
+        $this->messageBuilderCollection = $messageBuilderCollection;
     }
 
     public function onTaskChange(TaskChangeEvent $event)
@@ -71,12 +78,14 @@ class TaskNotificationListener implements EventSubscriberInterface
                 unset($recipients[array_search('watchers', $recipients)]);
                 $recipients = array_unique($recipients);
 
-                // message
-                $message = $this->messageBuilder->createMessage('taskChange', $transportName);
-                $message
+                // build message
+                /* @var TaskChangeMessageBuilder $messageBuilder */
+                $messageBuilder = $this->messageBuilderCollection->getBuilder('taskChange', $transportName);
+                $message = $messageBuilder
                     ->setTask($task)
                     ->setUser($user)
-                    ->setChanges($changes);
+                    ->setChanges($changes)
+                    ->createMessage();
 
                 try {
                     $this

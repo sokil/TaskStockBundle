@@ -1,6 +1,3 @@
-parameters:
-  notification.message.email.taskChange.class: Sokil\TaskStockBundle\Notification\Message\Email\TaskChangeMessage
-
 services:
     ################################################
     #             State                            #
@@ -55,9 +52,19 @@ services:
         arguments:
             - '@notification.schema_provider'
             - '@notification.transport_provider'
-            - '@notification.message_builder'
+            - '@notification.message_builder_collection.task_stock'
         tags:
             - {name: kernel.event_listener, event: task.change}
+
+    task_stock.message_builder.taskChange:
+      class: Sokil\TaskStockBundle\Notification\Message\TaskChangeMessageBuilder
+      arguments:
+        - @templating
+        - @translator
+        - @task_stock.text_diff_renderer.colour
+        - @task_stock.task_state_handler_builder
+      tags:
+        - {name: 'notification.message_builder', messageType: 'taskChange', collectionName: 'task_stock', transport: 'email'}
 
     ################################################
     #             Voters                           #
@@ -86,3 +93,8 @@ services:
 
     task_stock.attachments_upload_handler:
         class: Sokil\Upload\Handler
+
+    task_stock.text_diff_renderer.colour:
+      class: Sokil\Diff\Renderer
+      arguments:
+        - {format: '%task_stock.diff_renderer.format_colour%'}

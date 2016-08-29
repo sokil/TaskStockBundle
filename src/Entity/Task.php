@@ -423,7 +423,7 @@ class Task implements NotifyPropertyChanged
     /**
      * Get owner
      *
-     * @return Task
+     * @return User
      */
     public function getOwner()
     {
@@ -449,7 +449,7 @@ class Task implements NotifyPropertyChanged
     /**
      * Get owner
      *
-     * @return Task
+     * @return User
      */
     public function getAssignee()
     {

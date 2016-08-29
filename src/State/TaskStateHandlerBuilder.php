@@ -18,7 +18,7 @@ class TaskStateHandlerBuilder
         $this->stateConfiguration = $configuration;
     }
 
-    public function getStateConfiguration($stateSchemaId)
+    private function getStateConfiguration($stateSchemaId)
     {
         foreach ($this->stateConfiguration as $stateConfiguration) {
             if ($stateConfiguration['id'] === $stateSchemaId) {
@@ -29,17 +29,9 @@ class TaskStateHandlerBuilder
         throw new \Exception('Unknown task state schema');
     }
 
-    public function getDefaultStateConfiguration()
+    private function getDefaultStateConfiguration()
     {
         return $this->getStateConfiguration(0);
-    }
-
-    /**
-     * @return array
-     */
-    public function getStateConfigurations()
-    {
-        return $this->stateConfiguration;
     }
 
     /**
