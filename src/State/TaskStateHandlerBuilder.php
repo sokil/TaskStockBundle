@@ -35,9 +35,12 @@ class TaskStateHandlerBuilder
     }
 
     /**
-     * @return TaskStateHandler
+     * Get state configuration for passed task
+     *
+     * @param Task $task
+     * @return array
      */
-    public function build(Task $task)
+    protected function getTaskStateConfiguration(Task $task)
     {
         // get task state schema id
         $stateSchemaId = $task->getProject()->getStateSchemaId();
@@ -46,6 +49,16 @@ class TaskStateHandlerBuilder
         } else {
             $stateConfiguration = $this->getStateConfiguration($stateSchemaId);
         }
+
+        return $stateConfiguration;
+    }
+
+    /**
+     * @return TaskStateHandler
+     */
+    public function build(Task $task)
+    {
+        $stateConfiguration = $this->getTaskStateConfiguration($task);
 
         // init builder
         $builder = new MachineBuilder();

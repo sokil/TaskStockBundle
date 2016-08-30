@@ -3,12 +3,16 @@
 namespace Sokil\TaskStockBundle\State;
 
 use Sokil\State\Machine;
+use Sokil\State\State;
 use Sokil\TaskStockBundle\Entity\Task;
 
 class TaskStateHandler
 {
     private $task;
 
+    /**
+     * @var Machine
+     */
     private $stateMachine;
 
     public function __construct(Task $task, Machine $stateMachine)
@@ -17,9 +21,18 @@ class TaskStateHandler
         $this->stateMachine = $stateMachine;
     }
 
-    public function getState()
+    public function getCurrentState()
     {
         return $this->stateMachine->getCurrentState();
+    }
+
+    /**
+     * @param $stateName
+     * @return State
+     */
+    public function getState($stateName)
+    {
+        return $this->stateMachine->getState($stateName);
     }
 
     /**

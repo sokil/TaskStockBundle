@@ -9,7 +9,6 @@ use Sokil\TaskStockBundle\Common\Localization\LocalizedInterface;
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\TaskStockBundle\State\TaskStateHandler;
 use Sokil\UserBundle\Entity\User;
-use Sokil\State\State;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -89,44 +88,49 @@ class TaskChangeMessage implements EmailMessageInterface
         return '[' . $this->task->getCode() . '] ' . $this->task->getName();
     }
 
+    private function getSerializedChanges($lang)
+    {
+        $serializedChanges = [];
+
+        foreach ($this->changes as $fieldName => $change) {
+            $oldValue = $change->getOldValue();
+            $newValue = $change->getNewValue();
+
+            $serializedChange = [
+                'oldValue' => $oldValue,
+                'newValue' => $newValue,
+            ];
+
+            foreach ($serializedChange as $key => $value) {
+                if ($value instanceof \DateTime) {
+                    $serializedChange[$key] = $value->format('d.m.Y H:i:s');
+                } else if ($fieldName === 'stateName') {
+                    $state = $this->taskStateHandler->getState($value);
+                    $serializedChange[$key] = $this
+                        ->translator
+                        ->trans($state->getMetadata('label'));
+                } else if ($value instanceof LocalizedInterface) {
+                    $serializedChange[$key] = $value->getLocalization($lang);
+                }
+            }
+
+            if ($this->textDiffRenderer) {
+                $serializedChange['diff'] =  $this->textDiffRenderer->render(new Change(
+                    $serializedChange['oldValue'],
+                    $serializedChange['newValue']
+                ));
+            }
+
+            $serializedChanges[$fieldName] = $serializedChange;
+        }
+    }
+
     public function getBody()
     {
-        $lang = $this->translator->getLocale();
-
         return $this->templateEngine->render('TaskStockBundle:EmailMessageProvider:task.change.html.twig', [
             'task' => $this->task,
             'user' => $this->user,
-            'changes' => array_map(function(Change $change) use ($lang) {
-                $oldValue = $change->getOldValue();
-                $newValue = $change->getNewValue();
-
-                $changeSerialized = [
-                    'oldValue' => $oldValue,
-                    'newValue' => $newValue,
-                ];
-
-                foreach ($changeSerialized as $key => $value) {
-                    if ($value instanceof \DateTime) {
-                        $changeSerialized[$key] = $value->format('d.m.Y H:i:s');
-                    } elseif ($key === 'stateName') {
-//                        $state = null;
-//                        $changeSerialized[$key] = $this
-//                            ->translator
-//                            ->trans($state->getMetadata('label'));
-                    } elseif ($value instanceof LocalizedInterface) {
-                        $changeSerialized[$key] = $value->getLocalization($lang);
-                    }
-                }
-
-                if ($this->textDiffRenderer) {
-                    $changeSerialized['diff'] =  $this->textDiffRenderer->render(
-                        $changeSerialized['oldValue'],
-                        $changeSerialized['newValue']
-                    );
-                }
-
-                return $changeSerialized;
-            }, $this->changes),
+            'changes' => $this->getSerializedChanges($this->translator->getLocale()),
         ]);
     }
 }
