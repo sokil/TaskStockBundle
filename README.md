@@ -24,3 +24,5 @@ class AppKernel extends Kernel
 }
 
 ```
+
+## Configuring task states
