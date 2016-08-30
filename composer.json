@@ -14,7 +14,8 @@
         "sokil/user-bundle": "^0.2.9",
         "sokil/notification-bundle": "^0.2.1",
         "sokil/php-diff": "~0.3",
-        "sokil/php-state": "^0.5.1"
+        "sokil/php-state": "^0.5.1",
+        "sokil/php-upload": "^0.6.4"
     },
     "require-dev": {
         "phpunit/phpunit": "5.4.*",
