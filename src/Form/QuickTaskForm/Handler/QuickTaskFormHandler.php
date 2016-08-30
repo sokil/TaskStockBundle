@@ -109,7 +109,7 @@ class QuickTaskFormHandler
                 $this
                     ->taskStateHandlerBuilder
                     ->build($task)
-                    ->getState()
+                    ->getCurrentState()
                     ->getName()
             );
 

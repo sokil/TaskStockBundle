@@ -4,6 +4,7 @@ namespace Sokil\TaskStockBundle\Controller;
 
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\TaskStockBundle\Event\TaskChangeEvent;
+use Sokil\TaskStockBundle\State\TaskStateHandler;
 use Sokil\TaskStockBundle\Voter\TaskVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -167,8 +168,9 @@ class TaskController extends Controller
         }
 
         // get state handler
+        /* @var $stateHandler TaskStateHandler */
         $stateHandler = $this->get('task_stock.task_state_handler_builder')->build($task);
-        $taskState = $stateHandler->getState();
+        $taskState = $stateHandler->getCurrentState();
 
         // build response
         $response = [
@@ -218,9 +220,10 @@ class TaskController extends Controller
             $response['subtasks'] = $task->getSubTasks()->map(function(Task $subtask) use(
                 $translator
             ) {
-                // subtask state
+                // sub task state
+                /* @var $stateHandler TaskStateHandler */
                 $stateHandler = $this->get('task_stock.task_state_handler_builder')->build($subtask);
-                $subTaskState = $stateHandler->getState();
+                $subTaskState = $stateHandler->getCurrentState();
 
                 // build data
                 $subtaskData = [
@@ -294,7 +297,7 @@ class TaskController extends Controller
                 $this
                     ->get('task_stock.task_state_handler_builder')
                     ->build($task)
-                    ->getState()
+                    ->getCurrentState()
                     ->getName()
             );
 
@@ -504,7 +507,7 @@ class TaskController extends Controller
 
         // get state handler
         $stateHandler = $this->get('task_stock.task_state_handler_builder')->build($task);
-        $taskState = $stateHandler->getState();
+        $taskState = $stateHandler->getCurrentState();
 
         // response
         $translator = $this->get('translator');
