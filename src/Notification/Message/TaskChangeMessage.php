@@ -123,6 +123,8 @@ class TaskChangeMessage implements EmailMessageInterface
 
             $serializedChanges[$fieldName] = $serializedChange;
         }
+
+        return $serializedChanges;
     }
 
     public function getBody()
