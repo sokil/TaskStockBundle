@@ -25,7 +25,10 @@ class FixtureTaskChangeMessageBuilder extends FixtureBuilder
         parent::__construct($messageBuilder);
     }
 
-    public function createFixture($lang) {
+    public function createFixture() {
+
+        $lang = 'en';
+
         // user
         $user = new User();
         $user->setName('User name');
