@@ -78,11 +78,6 @@ class TaskChangeMessage implements EmailMessageInterface
         $this->changes = $changes;
     }
 
-    public function getTranslator()
-    {
-        return $this->translator;
-    }
-
     public function getSubject()
     {
         return '[' . $this->task->getCode() . '] ' . $this->task->getName();

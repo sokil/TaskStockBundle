@@ -4,6 +4,7 @@ namespace Sokil\TaskStockBundle\Notification\Message;
 
 use Sokil\Diff\Change;
 use Sokil\Diff\Renderer;
+use Sokil\NotificationBundle\Message\MessageInterface;
 use Sokil\NotificationBundle\MessageBuilder\AbstractBuilder;
 use Sokil\State\State;
 use Sokil\TaskStockBundle\Entity\Task;
@@ -68,12 +69,20 @@ class TaskChangeMessageBuilder extends AbstractBuilder
         $this->taskStateHandlerBuilder = $taskStateHandlerBuilder;
     }
 
+    /**
+     * @param User $user
+     * @return TaskChangeMessageBuilder
+     */
     public function setUser(User $user)
     {
         $this->user = $user;
         return $this;
     }
 
+    /**
+     * @param Task $task
+     * @return TaskChangeMessageBuilder
+     */
     public function setTask(Task $task)
     {
         $this->task = $task;
@@ -82,7 +91,7 @@ class TaskChangeMessageBuilder extends AbstractBuilder
 
     /**
      * @param Change[] $changes
-     * @return $this
+     * @return TaskChangeMessageBuilder
      */
     public function setChanges(array $changes)
     {

@@ -3,25 +3,29 @@
 namespace Sokil\TaskStockBundle\Notification\Message;
 
 use Sokil\Diff\Change;
-use Sokil\NotificationBundle\Message\MessageFixtureInterface;
+use Sokil\NotificationBundle\MessageBuilder\AbstractBuilder;
+use Sokil\NotificationBundle\MessageBuilder\FixtureBuilder;
 use Sokil\State\State;
 use Sokil\TaskStockBundle\Entity\TaskCategory;
 use Sokil\TaskStockBundle\Entity\TaskCategoryLocalization;
-use Sokil\NotificationBundle\Message\MessageInterface;
-
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\UserBundle\Entity\User;
 
-class TaskChangeMessageFixture implements MessageFixtureInterface
+/**
+ * @property TaskChangeMessageBuilder $messageBuilder
+ */
+class FixtureTaskChangeMessageBuilder extends FixtureBuilder
 {
-    public function apply(MessageInterface $message)
+    public function __construct(AbstractBuilder $messageBuilder)
     {
-        if (!($message instanceof TaskChangeMessage)) {
-            throw new \InvalidArgumentException('Message must be instance of TaskChangeMessage');
+        if (!($messageBuilder instanceof TaskChangeMessageBuilder)) {
+            throw new \InvalidArgumentException('Message builder must be instance of TaskChangeMessageBuilder');
         }
 
-        $lang = $message->getTranslator()->getLocale();
+        parent::__construct($messageBuilder);
+    }
 
+    public function createFixture($lang) {
         // user
         $user = new User();
         $user->setName('User name');
@@ -78,10 +82,11 @@ class TaskChangeMessageFixture implements MessageFixtureInterface
             ),
         ];
 
-        $message
+        return $this->messageBuilder
             ->setTask($task)
             ->setUser($user)
-            ->setChanges($changes);
+            ->setChanges($changes)
+            ->createMessage();
     }
 
     private function setPrivateProperty($object, $propertyName, $propertyValue)
