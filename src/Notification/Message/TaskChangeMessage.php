@@ -104,6 +104,8 @@ class TaskChangeMessage implements EmailMessageInterface
                     $serializedChange[$key] = $this
                         ->translator
                         ->trans($state->getMetadata('label'));
+                } else if ($value instanceof User) {
+                    $serializedChange[$key] = (string)$value;
                 } else if ($value instanceof LocalizedInterface) {
                     $serializedChange[$key] = $value->getLocalization($lang);
                 }

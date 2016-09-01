@@ -80,8 +80,8 @@ class FixtureTaskChangeMessageBuilder extends FixtureBuilder
             'location' => new Change('Old location', 'New location'),
             'description' => new Change('Old task description', 'New task description'),
             'stateName' => new Change(
-                new State('in_progress', ['label' => 'task_status_in_progress']),
-                new State('resolved', ['label' => 'task_status_resolved'])
+                'new',
+                'in_progress'
             ),
         ];
 
