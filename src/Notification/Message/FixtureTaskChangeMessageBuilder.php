@@ -9,6 +9,7 @@ use Sokil\State\State;
 use Sokil\TaskStockBundle\Entity\TaskCategory;
 use Sokil\TaskStockBundle\Entity\TaskCategoryLocalization;
 use Sokil\TaskStockBundle\Entity\Task;
+use Sokil\TaskStockBundle\Entity\TaskProject;
 use Sokil\UserBundle\Entity\User;
 
 /**
@@ -67,6 +68,11 @@ class FixtureTaskChangeMessageBuilder extends FixtureBuilder
             ->setDescription('new_category_description')
             ->setTaskCategory($newCategory);
         $newCategory->addLocalization($newCategoryLocalization);
+
+        // project
+        $project = new TaskProject();
+        $project->setStateSchemaId(0);
+        $task->setProject($project);
 
         // changes
         $changes = [
