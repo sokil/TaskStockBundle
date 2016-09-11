@@ -1,5 +1,5 @@
 task_stock:
-    resource: @TaskStockBundle/Controller/
+    resource: "@TaskStockBundle/Controller/"
     type:     annotation
 
 task_stock.spa_index:
