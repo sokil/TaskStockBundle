@@ -24,7 +24,7 @@ services:
     task_stock.spa.app_data_provider.locale:
       class: Sokil\FrontendBundle\Spa\LocaleApplicationDataProvider
       arguments:
-        - @request_stack
+        - '@request_stack'
       tags:
         - {name: frontend.spa.app_data_provider, app_data: task_stock.spa.app_data}
 
@@ -59,10 +59,10 @@ services:
     task_stock.message_builder.taskChange:
       class: Sokil\TaskStockBundle\Notification\Message\TaskChangeMessageBuilder
       arguments:
-        - @templating
-        - @translator
-        - @task_stock.text_diff_renderer.colour
-        - @task_stock.task_state_handler_builder
+        - '@templating'
+        - '@translator'
+        - '@task_stock.text_diff_renderer.colour'
+        - '@task_stock.task_state_handler_builder'
       tags:
         - {name: 'notification.message_builder', messageType: 'taskChange', collectionName: 'task_stock', transport: 'email'}
 
@@ -72,15 +72,15 @@ services:
     task_stock.voter.task_voter:
         class: Sokil\TaskStockBundle\Voter\TaskVoter
         arguments:
-          - @security.access.role_hierarchy_voter
-          - @task_stock.voter.task_project_voter
+          - '@security.access.role_hierarchy_voter'
+          - '@task_stock.voter.task_project_voter'
         tags:
            - { name: security.voter }
 
     task_stock.voter.task_project_voter:
         class: Sokil\TaskStockBundle\Voter\TaskProjectVoter
         arguments:
-          - @security.access.role_hierarchy_voter
+          - '@security.access.role_hierarchy_voter'
         tags:
            - { name: security.voter }
 
