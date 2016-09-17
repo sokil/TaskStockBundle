@@ -11,7 +11,7 @@
     "require": {
         "php": "^5.6 || ^7.0",
         "sokil/file-storage-bundle": "^0.1.7",
-        "sokil/user-bundle": "^0.2.17",
+        "sokil/user-bundle": "^0.2.19",
         "sokil/notification-bundle": "^0.3.2",
         "sokil/php-diff": "~0.3",
         "sokil/php-state": "^0.5.1",
