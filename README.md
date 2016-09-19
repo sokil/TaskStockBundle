@@ -50,5 +50,6 @@ assetic:
 
 This bundle also depends from other bundles, which also require configuration. If you yet not using it, configure them:
 * [NotificationBundle](https://github.com/sokil/NotificationBundle/blob/master/README.md#installation)
-
+* [UserBundle](https://github.com/sokil/UserBundle/blob/master/README.md#installation)
+* 
 ## Configuring task states
