@@ -41,6 +41,13 @@ security:
         ROLE_TASK_PROJECT_MANAGER:  [ROLE_TASK_PROJECT_VIEWER]
 ```
 
+Bundle uses assetic so you need to register it in assetic config:
+```yaml
+assetic:
+    bundles:
+        - TaskStockBundle
+```
+
 This bundle also depends from other bundles, which also require configuration. If you yet not using it, configure them:
 * [NotificationBundle](https://github.com/sokil/NotificationBundle/blob/master/README.md#installation)
 
