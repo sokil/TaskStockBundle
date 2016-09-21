@@ -41,12 +41,17 @@ security:
         ROLE_TASK_PROJECT_MANAGER:  [ROLE_TASK_PROJECT_VIEWER]
 ```
 
-Bundle uses assetic so you need to register it in assetic config:
+Bundle uses assetic so you need to register it in assetic config and do some configuration:
 ```yaml
 assetic:
     bundles:
         - TaskStockBundle
+    variables:
+        locale: [uk, en, de. fr]
+        env: [dev,prod]
 ```
+
+Paramater `varailbes` passes some valiables to assets, tham will be used to build path to assets.
 
 This bundle also depends from other bundles, which also require configuration. If you yet not using it, configure them:
 * [NotificationBundle](https://github.com/sokil/NotificationBundle/blob/master/README.md#installation)
