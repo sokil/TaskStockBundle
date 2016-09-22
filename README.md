@@ -41,6 +41,12 @@ security:
         ROLE_TASK_PROJECT_MANAGER:  [ROLE_TASK_PROJECT_VIEWER]
 ```
 
+Register routing in `./app/console/routing.yml`:
+```yaml
+task_stock:
+    resource: "@TaskStockBundle/Resources/config/routing.yml"
+```
+
 Bundle uses assetic so you need to register it in assetic config and do some configuration:
 ```yaml
 assetic:
