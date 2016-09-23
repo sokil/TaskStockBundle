@@ -59,7 +59,35 @@ assetic:
 
 Paramater `varailbes` passes some valiables to assets, tham will be used to build path to assets.
 
+This bundle uses [FrontendBundle](https://github.com/sokil/FrontendBundle) for building frontend, so configure SPA, and add some dependencies to it:
+```twig
+{% import "@FrontendBundle/Resources/views/macro.html.twig" as frontend %}
+{% import "@TaskStockBundle/Resources/views/Spa/macro.html.twig" as taskSpa %}
+
+{{ frontend.spaJsResources() }}
+{{ taskSpa.jsResources() }}
+<script type="text/javascript">
+    (function() {
+        // app options
+        var options = {{ applicationData|json_encode|raw }};
+        // router
+        options.router = new Marionette.AppRouter();
+        var taskStockRouter = new TaskStockRouter();
+        options.router.processAppRoutes(taskStockRouter, taskStockRouter.routes);
+        // container
+        options.container = new Container(_.extend(
+                {},
+                TaskStockServiceDefinition
+        ));
+        // start app
+        window.app = new Application(options);
+        window.app.start();
+    })();
+</script>
+```
+
 This bundle also depends from other bundles, which also require configuration. If you yet not using it, configure them:
+* [FrontendBundle](https://github.com/sokil/FrontendBundle/blob/master/README.md#installation)
 * [NotificationBundle](https://github.com/sokil/NotificationBundle/blob/master/README.md#installation)
 * [UserBundle](https://github.com/sokil/UserBundle/blob/master/README.md#installation)
 * [FileStorageBundle](https://github.com/sokil/FileStorageBundle/blob/master/README.md#installation)
