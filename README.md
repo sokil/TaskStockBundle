@@ -65,10 +65,14 @@ This bundle uses [FrontendBundle](https://github.com/sokil/FrontendBundle) for b
 {% import "@TaskStockBundle/Resources/views/Spa/macro.html.twig" as taskSpa %}
 
 {{ frontend.commonCssResources() }}
-{{ taskSpa.cssResources() }}
+{{ frontend.commonJsResources() }}
 
+{{ taskSpa.cssResources() }}
 {{ frontend.spaJsResources() }}
+
+{{ taskSpa.cssResources() }}
 {{ taskSpa.jsResources() }}
+
 <script type="text/javascript">
     (function() {
         // app options
