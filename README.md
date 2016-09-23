@@ -66,8 +66,6 @@ This bundle uses [FrontendBundle](https://github.com/sokil/FrontendBundle) for b
 
 {{ frontend.commonCssResources() }}
 {{ frontend.commonJsResources() }}
-
-{{ taskSpa.cssResources() }}
 {{ frontend.spaJsResources() }}
 
 {{ taskSpa.cssResources() }}
