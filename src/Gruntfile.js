@@ -70,8 +70,6 @@ module.exports = function (grunt) {
                 files: {
                     'Resources/public/js/vendor.js': [
                         'bower_components/typeahead.js/dist/typeahead.bundle.js',
-                        "bower_components/moment/moment.js",
-                        "bower_components/moment/locale/uk.js",
                         "bower_components/url-mutator/src/UrlMutator.js"
                     ]
                 }
@@ -87,6 +85,18 @@ module.exports = function (grunt) {
                         'bower_components/upload.js/dist/upload.min.js'
                     ]
                 }
+            }
+        },
+        copy: {
+            moment: {
+                expand: true,
+                flatten: true,
+                cwd: 'bower_components/moment/',
+                src: [
+                    'min/moment.min.js',
+                    'locale/*'
+                ],
+                dest: 'Resources/public/js/moment'
             }
         },
         cssmin: {
@@ -122,6 +132,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'newer:less',
         'newer:jade',
+        'newer:copy',
         'newer:uglify',
         'newer:cssmin'
     ]);
