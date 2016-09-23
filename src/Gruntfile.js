@@ -60,32 +60,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        copy: {
-            tinymce: {
-                expand: true,
-                cwd: 'bower_components/tinymce/',
-                src: [
-                    '**'
-                ],
-                dest: '../../../web/js/tinymce/'
-            },
-            perfectScrollbar: {
-                expand: true,
-                cwd: 'node_modules/perfect-scrollbar/dist/js/min/',
-                src: [
-                    '**'
-                ],
-                dest: '../../../web/js/perfectScrollbar/'
-            },
-            thirdParty: {
-                expand: true,
-                flatten: true,
-                src: [
-                    'bower_components/upload.js/dist/upload.min.js',
-                ],
-                dest: 'Resources/public/js'
-            }
-        },
         uglify: {
             vendors: {
                 options: {
@@ -98,8 +72,19 @@ module.exports = function (grunt) {
                         'bower_components/typeahead.js/dist/typeahead.bundle.js',
                         "bower_components/moment/moment.js",
                         "bower_components/moment/locale/uk.js",
-                        "bower_components/url-mutator/src/UrlMutator.js",
-                        "node_modules/requirejs/require.js"
+                        "bower_components/url-mutator/src/UrlMutator.js"
+                    ]
+                }
+            },
+            upload: {
+                options: {
+                    compress: grunt.config('env') === 'prod',
+                    beautify: grunt.config('env') !== 'prod',
+                    mangle: grunt.config('env') === 'prod',
+                },
+                files: {
+                    "Resources/public/js/upload.js": [
+                        'bower_components/upload.js/dist/upload.min.js'
                     ]
                 }
             }
@@ -108,7 +93,6 @@ module.exports = function (grunt) {
             vendors: {
                 files: {
                     'Resources/public/css/vendor.css': [
-                        "node_modules/perfect-scrollbar/dist/css/perfect-scrollbar.min.css",
                         "Resources/assets/css/twitterTypeahead.less"
                     ]
                 }
@@ -138,7 +122,6 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'newer:less',
         'newer:jade',
-        'copy',
         'newer:uglify',
         'newer:cssmin'
     ]);

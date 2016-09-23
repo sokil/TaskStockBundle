@@ -88,7 +88,7 @@ var TaskView = Marionette.LayoutView.extend({
             }));
 
             // init add button
-            require(['upload'], function(upload) {
+            require(['taskstock/js/upload'], function(upload) {
                 // create progress
                 var progressView = new ProgressView({
                     template: '<%= currentValue %> %',
