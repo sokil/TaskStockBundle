@@ -13,6 +13,7 @@
         "sokil/file-storage-bundle": "^0.1.7",
         "sokil/user-bundle": "^0.2.19",
         "sokil/notification-bundle": "^0.3.2",
+        "sokil/frontend-bundle": "^0.8.2",
         "sokil/php-diff": "~0.3",
         "sokil/php-state": "^0.5.1",
         "sokil/php-upload": "^0.6.4"
