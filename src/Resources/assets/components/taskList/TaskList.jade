@@ -3,9 +3,6 @@ each task in tasks
     .media-body
       h4.media-heading
         a(href="/#tasks/" + task.get('id'))= task.get('name')
-      if task.get('amount')
-        .label.label-primary= task.get('amountFormatted')
-      | 
       .label.label-info= task.get('date')
       if (task.get('category'))
         | 

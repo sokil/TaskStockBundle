@@ -2,7 +2,6 @@ i18n.addMessages({
     'task.task': 'Задача',
     'task.project': 'Проект',
     'task.name': 'Назва',
-    'task.amount': 'Вартість',
     'task.createdAt': 'Дата створення',
     'task.owner': 'Власник задачі',
     'task.assignee': 'Виконавець',

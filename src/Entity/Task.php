@@ -41,11 +41,6 @@ class Task implements NotifyPropertyChanged
     protected $description;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $amount;
-
-    /**
      * @ORM\ManyToOne(targetEntity="TaskCategory", fetch="EAGER")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=true)
      * @var TaskCategory
@@ -255,45 +250,6 @@ class Task implements NotifyPropertyChanged
         }
 
         return $annotation . '...';
-    }
-
-    /**
-     * Set amount
-     *
-     * @param integer $amount
-     * @return Task
-     */
-    public function setAmount($amount)
-    {
-        $amount = (int) $amount;
-
-        if ($amount !== $this->amount) {
-            $this->notifyPropertyChanged('amount', $this->amount, $amount);
-            $this->amount = $amount;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get amount
-     *
-     * @return integer 
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
-
-    /**
-     * Get amount
-     *
-     * @return integer
-     */
-    public function getFormattedAmount($locale, $currency)
-    {
-        $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
-        return $formatter->formatCurrency($this->amount, $currency);
     }
 
     /**

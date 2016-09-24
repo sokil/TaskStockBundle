@@ -20,7 +20,6 @@ class TaskTest extends \PHPUnit_Framework_TestCase
 
         $task
             ->setName('hello')
-            ->setAmount(32);
 
         $this->assertSame(
             null,
@@ -30,16 +29,6 @@ class TaskTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(
             'hello',
             $event->getChanges()[42]['name']->getNewValue()
-        );
-
-        $this->assertSame(
-            null,
-            $event->getChanges()[42]['amount']->getOldValue()
-        );
-
-        $this->assertSame(
-            32,
-            $event->getChanges()[42]['amount']->getNewValue()
         );
     }
 }

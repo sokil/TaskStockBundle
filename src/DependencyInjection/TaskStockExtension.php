@@ -23,11 +23,6 @@ class TaskStockExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        // currency
-        if (isset($config['currency'])) {
-            $container->setParameter($this->getAlias() . '.currency', $config['currency']);
-        }
-
         // attachments
         if (isset($config['attachments_filesystem'])) {
             $container->setParameter(

@@ -23,7 +23,6 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('attachments_filesystem')->end()
-                ->scalarNode('currency')->end()
                 ->arrayNode('stateConfig')
                     ->prototype('array')
                         ->children()

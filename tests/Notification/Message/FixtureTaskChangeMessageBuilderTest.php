@@ -109,12 +109,6 @@ class FixtureTaskChangeMessageBuilderTest extends \PHPUnit_Framework_TestCase
                                 'newValue' => 'New task name',
                                 'diff' => '<del>Old task name</del>' . PHP_EOL . '<ins>New task name</ins>',
                             ),
-                        'amount' =>
-                            array (
-                                'oldValue' => 10,
-                                'newValue' => 42.200000000000003,
-                                'diff' => '<del>10</del>' . PHP_EOL . '<ins>42.2</ins>',
-                            ),
                         'date' =>
                             array (
                                 'oldValue' => '14.10.2014 00:00:00',

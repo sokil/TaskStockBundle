@@ -7,9 +7,6 @@ form#taskEditorForm
   .form-group
     label #{t('taskEditor.name')}
     input(type="text", name="name", value=task.get('name'), class="form-control")
-  .form-group
-    label #{t('taskEditor.amount')}
-    input(type="text", name="amount", value=task.get('amount'), class="form-control")
   if task.hasPermission('changeAssignee')
     .form-group
       label #{t('taskEditor.assignee')}

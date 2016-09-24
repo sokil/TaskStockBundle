@@ -2,7 +2,6 @@ i18n.addMessages({
     'task.task': 'Task',
     'task.project': 'Project',
     'task.name': 'Title',
-    'task.amount': 'Amount',
     'task.createdAt': 'Create date',
     'task.owner': 'Task owner',
     'task.assignee': 'Assignee',

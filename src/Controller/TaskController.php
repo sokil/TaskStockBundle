@@ -74,11 +74,10 @@ class TaskController extends Controller
 
         // get current locale
         $locale = $request->getLocale();
-        $currency = $this->container->getParameter('task_stock.currency');
         
         // return response
         return new JsonResponse([
-            'tasks' => array_map(function(Task $task) use($locale, $currency) {
+            'tasks' => array_map(function(Task $task) use($locale) {
                 // category
                 $category = $task->getCategory();
 
@@ -89,8 +88,6 @@ class TaskController extends Controller
                     'description' => strip_tags($task->getAnnotation()),
                     'location' => $task->getLocation(),
                     'date' => $task->getDate('d.m.Y H:i'),
-                    'amountFormatted' => $task->getFormattedAmount($locale, $currency),
-                    'amount' => $task->getAmount(),
                     'category' => $category ? [
                         'id' => $category->getId(),
                         'name' => $category->getLocalization($locale)->getName(),
@@ -179,7 +176,6 @@ class TaskController extends Controller
             'description'   => $task->getDescription(),
             'date'          => $task->getDate('d.m.Y H:i:s'),
             'location'      => $task->getLocation(),
-            'amount'        => $task->getAmount(),
             'state'         => [
                 'name'  => $taskState->getName(),
                 'label' => $translator->trans($taskState->getMetadata('label')),
@@ -334,7 +330,6 @@ class TaskController extends Controller
 
         // set fields
         $task
-            ->setAmount($request->get('amount'))
             ->setCategory(
                 $em->getReference(
                     'TaskStockBundle:TaskCategory',
