@@ -9,11 +9,6 @@ var TaskStockRouter = Marionette.AppRouter.extend({
         "taskCategories": "taskCategoriesAction",
         "projects": "taskProjectsAction",
         "projects/:id": "taskProjectAction",
-        "users": "usersAction",
-        "users/new": "editUserAction",
-        "users/:id/edit": "editUserAction",
-        "users/:id": "userAction",
-        "roleGroups": "roleGroupsAction"
     },
     
     /**
@@ -67,48 +62,5 @@ var TaskStockRouter = Marionette.AppRouter.extend({
         app.rootView.content.show(new TaskView({
             model: model
         }));
-    },
-
-    /**
-     * Users list
-     */
-    usersAction: function() {
-        app.rootView.content.show(new UsersPageView());
-    },
-
-    /**
-     * User editor
-     */
-    editUserAction: function(id) {
-        // model
-        var collection = new UserCollection();
-        var model = collection.add({});
-
-        if (id && id !== 'new') {
-            model.set('id', id);
-        }
-
-        app.rootView.content.show(new UserEditorView({
-            model: model
-        }));
-    },
-
-    /**
-     * Show user
-     */
-    userAction: function(id) {
-        // model
-        var collection = new UserCollection();
-        var model = collection.add({id: id});
-
-        // render page
-        app.rootView.content.show(new UserView({
-            model: model
-        }));
-    },
-
-    roleGroupsAction: function()
-    {
-        app.rootView.content.show(new RoleGroupsPageView());
     }
 });
