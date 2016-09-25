@@ -1,7 +1,6 @@
 var TaskStockRouter = Marionette.AppRouter.extend({
 
     routes: {
-        "": "tasksAction",
         "tasks": "tasksAction",
         "tasks/new": "editTaskAction",
         "tasks/:id/edit": "editTaskAction",
