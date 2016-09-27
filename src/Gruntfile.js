@@ -97,6 +97,14 @@ module.exports = function (grunt) {
                     'locale/*'
                 ],
                 dest: 'Resources/public/js/moment'
+            },
+            tinymce: {
+                expand: true,
+                cwd: 'bower_components/tinymce/',
+                src: [
+                    '**'
+                ],
+                dest: 'Resources/public/js/tinymce'
             }
         },
         cssmin: {
