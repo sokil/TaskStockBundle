@@ -69,7 +69,6 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'Resources/public/js/vendor.js': [
-                        'bower_components/typeahead.js/dist/typeahead.bundle.js',
                         "bower_components/url-mutator/src/UrlMutator.js"
                     ]
                 }
@@ -105,6 +104,15 @@ module.exports = function (grunt) {
                     '**'
                 ],
                 dest: 'Resources/public/js/tinymce'
+            },
+            typeahead: {
+                expand: true,
+                cwd: 'bower_components/typeahead.js/dist/',
+                src: [
+                    'typeahead.jquery.min.js',
+                    'bloodhound.min.js'
+                ],
+                dest: 'Resources/public/js/typeahead'
             }
         },
         cssmin: {
