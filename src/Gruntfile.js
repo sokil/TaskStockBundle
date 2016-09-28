@@ -18,9 +18,10 @@ module.exports = function (grunt) {
             }
         },
         less: {
-            components: {
+            typeahead: {
                 files: {
-                    "Resources/public/css/components.css": [
+                    "Resources/public/css/typeahead.css": [
+                        "Resources/assets/css/typeahead.less"
                     ]
                 }
             }
@@ -119,7 +120,7 @@ module.exports = function (grunt) {
             vendors: {
                 files: {
                     'Resources/public/css/vendor.css': [
-                        "Resources/assets/css/twitterTypeahead.less"
+
                     ]
                 }
             }

@@ -76,6 +76,9 @@ var TaskEditorView = Marionette.ItemView.extend({
                     });
                 });
 
+                app.loadCss([
+                    '/bundles/taskstock/css/typeahead.css'
+                ]);
 
                 require(['typeahead', 'bloodhound'], function() {
                     if (self.model.hasPermission('changeAssignee')) {
