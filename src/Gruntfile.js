@@ -18,6 +18,14 @@ module.exports = function (grunt) {
             }
         },
         less: {
+            components: {
+                files: {
+                    "Resources/public/css/components.css": [
+                        "Resources/assets/css/theme.less",
+                        "Resources/assets/components/**/*.less"
+                    ]
+                }
+            },
             typeahead: {
                 files: {
                     "Resources/public/css/typeahead.css": [
@@ -132,7 +140,7 @@ module.exports = function (grunt) {
                 ],
                 tasks: ['build'],
                 options: {},
-            },
+            }
         }
     });
 

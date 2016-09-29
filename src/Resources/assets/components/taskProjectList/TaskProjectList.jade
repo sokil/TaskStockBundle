@@ -1,7 +1,7 @@
 table.table.table-striped.table-hover.top-space
   tr
-    th Name
-    th.hidden-xs.hidden-sm Code
+    th= t('task_project_list.project_name')
+    th.hidden-xs.hidden-sm= t('task_project_list.project_code')
     th
   each project in projects
     tr

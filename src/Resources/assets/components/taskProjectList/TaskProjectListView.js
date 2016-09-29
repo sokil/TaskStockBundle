@@ -16,6 +16,12 @@ var TaskProjectListView = Marionette.LayoutView.extend({
     },
 
     renderAsync: function() {
+        // if no projects configured
+        if (this.collection.models.length === 0) {
+            this.$el.html(app.render('TaskProjectEmptyList'));
+            return;
+        }
+
         this.$el.html(app.render('TaskProjectList', {
             projects: this.collection.models,
         }));
