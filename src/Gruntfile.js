@@ -5,6 +5,12 @@ module.exports = function (grunt) {
     grunt.config('env', env);
     console.log('Environment: ' + env);
 
+    grunt.config('locales', [
+        'uk',
+        'en',
+        'ru'
+    ]);
+
     grunt.initConfig({
         jshint: {
             files: [],
@@ -81,6 +87,17 @@ module.exports = function (grunt) {
                         "bower_components/url-mutator/src/UrlMutator.js"
                     ]
                 }
+            },
+            messages: {
+                files: (function() {
+                    var files = {}, locale;
+                    grunt.config('locales').forEach(function(locale) {
+                        files['Resources/public/js/messages.' + locale + '.js'] = [
+                            'Resources/assets/components/*/messages.' + locale + '.js'
+                        ];
+                    });
+                    return files;
+                })()
             },
             upload: {
                 options: {
