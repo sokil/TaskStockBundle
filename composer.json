@@ -1,6 +1,8 @@
 {
     "name": "sokil/task-stock-bundle",
     "description": "Task tracking",
+    "minimum-stability" : "dev",
+    "prefer-stable" : true,
     "license": "MIT",
     "authors": [
         {
