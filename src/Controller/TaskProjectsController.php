@@ -142,15 +142,22 @@ class TaskProjectsController extends Controller
             $project = new TaskProject();
         }
 
-        // persist
-        $em = $this->getDoctrine()->getManager();
 
         $project
             ->setName($request->get('name'))
             ->setCode($request->get('code'))
-            ->setDescription($request->get('description'))
-            ->setNotificationSchemaId($request->get('notificationSchemaId'))
-            ->setStateSchemaId($request->get('stateSchemaId'));
+            ->setDescription($request->get('description'));
+
+
+        $notificationSchemaId = $request->get('notificationSchemaId');
+        if (is_numeric($notificationSchemaId)) {
+            $project->setNotificationSchemaId($notificationSchemaId);
+        }
+
+        $stateSchemaId = $request->get('stateSchemaId');
+        if (is_numeric($stateSchemaId)) {
+            $project->setStateSchemaId($stateSchemaId);
+        }
 
         // validate
         $errors = $this->get('validator')->validate($project);
@@ -162,8 +169,9 @@ class TaskProjectsController extends Controller
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
+        // persist
         try {
-            // common fields
+            $em = $this->getDoctrine()->getManager();
             $em->persist($project);
             $em->flush();
         } catch (\Exception $e) {
