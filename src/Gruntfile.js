@@ -129,22 +129,13 @@ module.exports = function (grunt) {
                 dest: 'Resources/public/js/typeahead'
             }
         },
-        cssmin: {
-            vendors: {
-                files: {
-                    'Resources/public/css/vendor.css': [
-
-                    ]
-                }
-            }
-        },
         watch: {
             project: {
                 files: [
                     'Resources/assets/**/*'
                 ],
                 tasks: ['build'],
-                options: {},
+                options: {}
             }
         }
     });
@@ -163,8 +154,7 @@ module.exports = function (grunt) {
         'newer:less',
         'newer:jade',
         'newer:copy',
-        'newer:uglify',
-        'newer:cssmin'
+        'newer:uglify'
     ]);
 
     grunt.registerTask('listen', [
