@@ -76,18 +76,6 @@ module.exports = function (grunt) {
             }
         },
         uglify: {
-            vendors: {
-                options: {
-                    compress: grunt.config('env') === 'prod',
-                    beautify: grunt.config('env') !== 'prod',
-                    mangle: grunt.config('env') === 'prod',
-                },
-                files: {
-                    'Resources/public/js/vendor.js': [
-                        "bower_components/url-mutator/src/UrlMutator.js"
-                    ]
-                }
-            },
             messages: {
                 files: (function() {
                     var files = {}, locale;
