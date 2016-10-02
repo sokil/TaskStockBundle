@@ -17,16 +17,14 @@ form#taskEditorForm
       label #{t('taskEditor.owner')}
       input(type="hidden", name="owner", value=task.get('owner') ? task.get('owner').id : "")
       input(data-owner, type="text", value=task.get('owner') ? task.get('owner').name : "", class="form-control", id="txtOwner")
-  .form-group
-    label #{t('taskEditor.category')}
-    select(name="category", class="form-control")
-      each category in categories
-        - var currentCategoryId = task.get('category') ? task.get('category').id : null;
-        - var selected=(currentCategoryId == category.get('id'))
-        option(value=category.get('id'), selected=selected)= category.get('name')
-  .form-group
-    label #{t('taskEditor.location')}
-    input(type="text", name="location", value=task.get('location'), class="form-control")
+  if (categories.length)
+    .form-group
+      label #{t('taskEditor.category')}
+      select(name="category", class="form-control")
+        each category in categories
+          - var currentCategoryId = task.get('category') ? task.get('category').id : null;
+          - var selected=(currentCategoryId == category.get('id'))
+          option(value=category.get('id'), selected=selected)= category.get('name')
   .form-group
     label #{t('taskEditor.description')}
     textarea(name="description", class="form-control", rows="7")= task.get('description')

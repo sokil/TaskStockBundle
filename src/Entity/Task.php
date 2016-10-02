@@ -77,11 +77,6 @@ class Task implements NotifyPropertyChanged
     protected $subTasks;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    protected $location;
-
-    /**
      * @ORM\Column(type="datetime", nullable=false)
      * @Assert\NotNull
      * @var \DateTime 
@@ -302,32 +297,6 @@ class Task implements NotifyPropertyChanged
     public function getCategory()
     {
         return $this->category;
-    }
-
-    /**
-     * Set location
-     *
-     * @param string $location
-     * @return Task
-     */
-    public function setLocation($location)
-    {
-        if ($location !== $this->location) {
-            $this->notifyPropertyChanged('location', $this->location, $location);
-            $this->location = $location;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get location
-     *
-     * @return string 
-     */
-    public function getLocation()
-    {
-        return $this->location;
     }
 
     /**

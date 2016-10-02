@@ -133,12 +133,6 @@ class FixtureTaskChangeMessageBuilderTest extends \PHPUnit_Framework_TestCase
                                 'newValue' => NULL,
                                 'diff' => '',
                             ),
-                        'location' =>
-                            array (
-                                'oldValue' => 'Old location',
-                                'newValue' => 'New location',
-                                'diff' => '<del>Old location</del>' . PHP_EOL . '<ins>New location</ins>',
-                            ),
                         'description' =>
                             array (
                                 'oldValue' => 'Old task description',

@@ -81,7 +81,6 @@ class FixtureTaskChangeMessageBuilder extends FixtureBuilder
             'owner' => new Change(null, $user),
             'assignee' => new Change(null, $user),
             'category' => new Change($oldCategory, $newCategory),
-            'location' => new Change('Old location', 'New location'),
             'description' => new Change('Old task description', 'New task description'),
             'stateName' => new Change(
                 'new',

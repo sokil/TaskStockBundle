@@ -86,7 +86,6 @@ class TaskController extends Controller
                     'id' => $task->getId(),
                     'name' => $task->getName(),
                     'description' => strip_tags($task->getAnnotation()),
-                    'location' => $task->getLocation(),
                     'date' => $task->getDate('d.m.Y H:i'),
                     'category' => $category ? [
                         'id' => $category->getId(),
@@ -175,7 +174,6 @@ class TaskController extends Controller
             'name'          => $task->getName(),
             'description'   => $task->getDescription(),
             'date'          => $task->getDate('d.m.Y H:i:s'),
-            'location'      => $task->getLocation(),
             'state'         => [
                 'name'  => $taskState->getName(),
                 'label' => $translator->trans($taskState->getMetadata('label')),
@@ -337,8 +335,7 @@ class TaskController extends Controller
                 )
             )
             ->setDescription($request->get('description'))
-            ->setName($request->get('name'))
-            ->setLocation($request->get('location'));
+            ->setName($request->get('name'));
 
         // set assignee
         if ($this->isGranted(TaskVoter::PERMISSION_CHANGE_ASSIGNEE, $task)) {
