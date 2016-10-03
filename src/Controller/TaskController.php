@@ -366,17 +366,18 @@ class TaskController extends Controller
 
         // set assignee
         if ($this->isGranted(TaskVoter::PERMISSION_CHANGE_ASSIGNEE, $task)) {
-            if ($request->get('assignee')) {
-                $task->setAssignee(
-                    $em->getReference(
-                        'UserBundle:User',
-                        $request->get('assignee')
-                    )
-                );
+            $assigneId = $request->get('assignee');
+            if ($assigneId) {
+                $task->setAssignee($em->getReference('UserBundle:User', $assigneId));
             }
         }
 
-        // set assignee
+        // set default assignee
+        if (null === $task->getAssignee()) {
+            $task->setAssignee($this->getUser());
+        }
+
+        // set owner
         if ($this->isGranted(TaskVoter::PERMISSION_CHANGE_OWNER, $task)) {
             if ($request->get('owner')) {
                 $task->setOwner(
@@ -386,6 +387,11 @@ class TaskController extends Controller
                     )
                 );
             }
+        }
+
+        // set default owner
+        if (null === $task->getOwner()) {
+            $task->setOwner($this->getUser());
         }
 
         // validate
