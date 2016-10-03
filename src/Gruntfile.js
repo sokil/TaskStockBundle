@@ -95,7 +95,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     "Resources/public/js/upload.js": [
-                        'bower_components/upload.js/dist/upload.min.js'
+                        'bower_components/upload.js/dist/upload.js'
                     ]
                 }
             }
