@@ -10,9 +10,13 @@ var TaskCategoryListView = Backbone.View.extend({
     },
 
     renderAsync: function() {
-        this.$el.html(app.render('TaskCategoryList', {
-            categories: this.collection.models
-        }));
+        if (this.collection.models.length) {
+            this.$el.html(app.render('TaskCategoryList', {
+                categories: this.collection.models
+            }));
+        } else {
+            this.$el.html(app.render('TaskCategoryEmptyList'));
+        }
     },
 
     editButtonClickListener: function(e) {

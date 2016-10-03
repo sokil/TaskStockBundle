@@ -53,24 +53,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     "Resources/public/js/components.jade.js": [
-                        "Resources/assets/components/tasksPage/*.jade",
-                        "Resources/assets/components/taskList/*.jade",
-                        "Resources/assets/components/taskCategorySelect/*.jade",
-                        "Resources/assets/components/taskCategoriesPage/*.jade",
-                        "Resources/assets/components/taskCategoryList/*.jade",
-                        "Resources/assets/components/taskCategoryEditorPopup/*.jade",
-                        "Resources/assets/components/taskProjectsPage/*.jade",
-                        "Resources/assets/components/taskProject/*.jade",
-                        "Resources/assets/components/taskProjectList/*.jade",
-                        "Resources/assets/components/taskProjectParameters/*.jade",
-                        "Resources/assets/components/taskProjectPermissions/*.jade",
-                        "Resources/assets/components/taskProjectPermissionEditorPopup/*.jade",
-                        "Resources/assets/components/taskProjectEditorPopup/*.jade",
-                        "Resources/assets/components/taskEditor/*.jade",
-                        "Resources/assets/components/task/*.jade",
-                        "Resources/assets/components/taskComments/*.jade",
-                        "Resources/assets/components/taskCommentForm/*.jade",
-                        "Resources/assets/components/taskAttachments/*.jade"
+                        "Resources/assets/components/**/*.jade"
                     ]
                 }
             }
