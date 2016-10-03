@@ -175,6 +175,18 @@ class Task implements NotifyPropertyChanged
     }
 
     /**
+     * Check if task has  related state machine
+     *
+     * @param Task $task
+     * @return bool
+     */
+    public function hasStates()
+    {
+        $stateSchemaId = $this->getProject()->getStateSchemaId();
+        return !empty($stateSchemaId);
+    }
+
+    /**
      * Set name
      *
      * @param string $name

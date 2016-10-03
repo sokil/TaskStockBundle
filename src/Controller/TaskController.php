@@ -163,10 +163,6 @@ class TaskController extends Controller
             ]);
         }
 
-        // get state handler
-        /* @var $stateHandler TaskStateHandler */
-        $stateHandler = $this->get('task_stock.task_state_handler_builder')->build($task);
-        $taskState = $stateHandler->getCurrentState();
 
         // build response
         $response = [
@@ -174,19 +170,6 @@ class TaskController extends Controller
             'name'          => $task->getName(),
             'description'   => $task->getDescription(),
             'date'          => $task->getDate('d.m.Y H:i:s'),
-            'state'         => [
-                'name'  => $taskState->getName(),
-                'label' => $translator->trans($taskState->getMetadata('label')),
-            ],
-            'nextStates'    => array_map(function(\Sokil\State\Transition $transition) use (
-                $translator
-            ) {
-                return [
-                    'label' => $translator->trans($transition->getMetadata('label')),
-                    'state' => $transition->getResultingStateName(),
-                    'icon' => $transition->getMetadata('icon'),
-                ];
-            }, $stateHandler->getNextStateTransitions()),
             'owner' => [
                 'id' => $taskOwner->getId(),
                 'name' => $taskOwner->getName(),
@@ -209,27 +192,53 @@ class TaskController extends Controller
             'permissions' => $permissions,
         ];
 
-        // add subtasks
-        if ($request->get('subtasks')) {
-            $response['subtasks'] = $task->getSubTasks()->map(function(Task $subtask) use(
+        // get state handler
+        /* @var $stateHandler TaskStateHandler */
+        $stateHandlerBuilder = $this->get('task_stock.task_state_handler_builder');
+        if ($task->hasStates()) {
+            $stateHandler = $stateHandlerBuilder->build($task);
+            $taskState = $stateHandler->getCurrentState();
+
+            $response['state'] = [
+                'name'  => $taskState->getName(),
+                'label' => $translator->trans($taskState->getMetadata('label')),
+            ];
+
+            $response['nextStates'] = array_map(function(\Sokil\State\Transition $transition) use (
                 $translator
             ) {
-                // sub task state
-                /* @var $stateHandler TaskStateHandler */
-                $stateHandler = $this->get('task_stock.task_state_handler_builder')->build($subtask);
-                $subTaskState = $stateHandler->getCurrentState();
+                return [
+                    'label' => $translator->trans($transition->getMetadata('label')),
+                    'state' => $transition->getResultingStateName(),
+                    'icon' => $transition->getMetadata('icon'),
+                ];
+            }, $stateHandler->getNextStateTransitions());
+        }
 
-                // build data
+        // add subtasks
+        if ($request->get('subtasks')) {
+            $response['subtasks'] = $task->getSubTasks()->map(function(Task $subTask) use(
+                $translator,
+                $stateHandlerBuilder
+            ) {
                 $subtaskData = [
-                    'id' => $subtask->getId(),
-                    'name' => $subtask->getName(),
-                    'state' => [
-                        'name'  => $subTaskState->getName(),
-                        'label' => $translator->trans($subTaskState->getMetadata('label')),
-                    ]
+                    'id' => $subTask->getId(),
+                    'name' => $subTask->getName(),
                 ];
 
-                $assignee = $subtask->getAssignee();
+                // sub task state
+                /* @var $stateHandler TaskStateHandler */
+                if ($subTask->hasStates()) {
+                    $stateHandler = $stateHandlerBuilder->build($subTask);
+                    $subTaskState = $stateHandler->getCurrentState();
+                    $subtaskData['state'] = [
+                        'name'  => $subTaskState->getName(),
+                        'label' => $translator->trans($subTaskState->getMetadata('label')),
+                    ];
+                }
+
+                // assignee
+                $assignee = $subTask->getAssignee();
                 if ($assignee) {
                     $subtaskData['assignee'] =[
                         'id'        => $assignee->getId(),
@@ -330,7 +339,7 @@ class TaskController extends Controller
         // set state
         if (null === $task->getStateName() ) {
             $stateHandlerBuilder = $this->get('task_stock.task_state_handler_builder');
-            if ($stateHandlerBuilder->hasStates($task)) {
+            if ($task->hasStates()) {
                 $stateName = $stateHandlerBuilder
                     ->build($task)
                     ->getCurrentState()

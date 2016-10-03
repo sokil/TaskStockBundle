@@ -47,18 +47,6 @@ class TaskStateHandlerBuilder
     }
 
     /**
-     * Check if task has  related state machine
-     *
-     * @param Task $task
-     * @return bool
-     */
-    public function hasStates(Task $task)
-    {
-        $stateSchemaId = $task->getProject()->getStateSchemaId();
-        return !empty($stateSchemaId);
-    }
-
-    /**
      * @return TaskStateHandler
      */
     public function build(Task $task)
