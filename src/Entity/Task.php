@@ -182,7 +182,11 @@ class Task implements NotifyPropertyChanged
      */
     public function hasStates()
     {
-        $stateSchemaId = $this->getProject()->getStateSchemaId();
+        if (empty($this->project)) {
+            return false;
+        }
+
+        $stateSchemaId = $this->project->getStateSchemaId();
         return !empty($stateSchemaId);
     }
 
