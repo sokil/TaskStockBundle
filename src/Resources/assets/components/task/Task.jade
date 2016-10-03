@@ -1,6 +1,7 @@
 .block.top-space
   .title
     = t('task.task') + " #" + task.get('id') + " "
+    if task.get('state')
       .label.label-primary#taskStateLabel= task.get('state').label
     .pull-right
         |&nbsp;
