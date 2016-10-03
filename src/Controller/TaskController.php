@@ -286,33 +286,12 @@ class TaskController extends Controller
                 ->setDate(new \DateTime())
                 ->setOwner($this->getUser());
 
-            //set default state
-            $task->setStateName(
-                $this
-                    ->get('task_stock.task_state_handler_builder')
-                    ->build($task)
-                    ->getCurrentState()
-                    ->getName()
-            );
-
             // subtask
             if ($request->get('parent')) {
                 $task->setParent($em->getReference(
                     'TaskStockBundle:Task',
                     $request->get('parent')
                 ));
-            }
-
-            // set default project
-            if (!$this->isGranted(TaskVoter::PERMISSION_CHANGE_PROJECT, $task)) {
-                // set default project
-                $helpDeskProject = $this->getDoctrine()
-                    ->getRepository('TaskStockBundle:TaskProject')
-                    ->findOneBy([
-                        'code' => $this->container->getParameter('default_project'),
-                    ]);
-
-                $task->setProject($helpDeskProject);
             }
         }
 
@@ -326,16 +305,55 @@ class TaskController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        // set fields
-        $task
-            ->setCategory(
+        // set project
+        if ($this->isGranted(TaskVoter::PERMISSION_CHANGE_PROJECT, $task)) {
+            $projectId = $request->get('project');
+            if ($projectId) {
+                $taskProject = $em->getReference(
+                    'TaskStockBundle:TaskProject',
+                    $projectId
+                );
+                $task->setProject($taskProject);
+            }
+        }
+
+        // set default project
+        if (null === $task->getProject()) {
+            $taskProject = $this->getDoctrine()
+                ->getRepository('TaskStockBundle:TaskProject')
+                ->findOneBy([
+                    'code' => $this->container->getParameter('default_project'),
+                ]);
+            $task->setProject($taskProject);
+        }
+
+        // set state
+        if (null === $task->getStateName() ) {
+            $stateHandlerBuilder = $this->get('task_stock.task_state_handler_builder');
+            if ($stateHandlerBuilder->hasStates($task)) {
+                $stateName = $stateHandlerBuilder
+                    ->build($task)
+                    ->getCurrentState()
+                    ->getName();
+
+                $task->setStateName($stateName);
+            }
+        }
+
+        // set category
+        $categoryId = $request->get('category');
+        if ($categoryId) {
+            $task->setCategory(
                 $em->getReference(
                     'TaskStockBundle:TaskCategory',
-                    $request->get('category')
+                    $categoryId
                 )
-            )
-            ->setDescription($request->get('description'))
-            ->setName($request->get('name'));
+            );
+        }
+
+        // set text
+        $task->setName($request->get('name'));
+        $task->setDescription($request->get('description'));
 
         // set assignee
         if ($this->isGranted(TaskVoter::PERMISSION_CHANGE_ASSIGNEE, $task)) {
@@ -358,16 +376,6 @@ class TaskController extends Controller
                         $request->get('owner')
                     )
                 );
-            }
-        }
-
-        // set project
-        if ($this->isGranted(TaskVoter::PERMISSION_CHANGE_PROJECT, $task)) {
-            if ($request->get('project')) {
-                $task->setProject($em->getReference(
-                    'TaskStockBundle:TaskProject',
-                    $request->get('project')
-                ));
             }
         }
 

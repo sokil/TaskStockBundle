@@ -99,8 +99,7 @@ class Task implements NotifyPropertyChanged
     protected $assignee;
 
     /**
-     * @ORM\Column(name="state", type="string")
-     * @Assert\NotBlank
+     * @ORM\Column(name="state", type="string", nullable=true)
      */
     protected $stateName;
 

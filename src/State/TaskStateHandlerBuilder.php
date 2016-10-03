@@ -29,28 +29,33 @@ class TaskStateHandlerBuilder
         throw new \Exception('Unknown task state schema');
     }
 
-    private function getDefaultStateConfiguration()
-    {
-        return $this->getStateConfiguration(0);
-    }
-
     /**
      * Get state configuration for passed task
      *
      * @param Task $task
-     * @return array
+     * @return array|null
      */
     protected function getTaskStateConfiguration(Task $task)
     {
         // get task state schema id
         $stateSchemaId = $task->getProject()->getStateSchemaId();
         if (empty($stateSchemaId)) {
-            $stateConfiguration = $this->getDefaultStateConfiguration();
-        } else {
-            $stateConfiguration = $this->getStateConfiguration($stateSchemaId);
+            throw new \Exception('task has not related state configuration');
         }
 
-        return $stateConfiguration;
+        return $this->getStateConfiguration($stateSchemaId);
+    }
+
+    /**
+     * Check if task has  related state machine
+     *
+     * @param Task $task
+     * @return bool
+     */
+    public function hasStates(Task $task)
+    {
+        $stateSchemaId = $task->getProject()->getStateSchemaId();
+        return !empty($stateSchemaId);
     }
 
     /**
