@@ -326,16 +326,6 @@ class TaskController extends Controller
             }
         }
 
-        // set default project
-        if (null === $task->getProject()) {
-            $taskProject = $this->getDoctrine()
-                ->getRepository('TaskStockBundle:TaskProject')
-                ->findOneBy([
-                    'code' => $this->container->getParameter('default_project'),
-                ]);
-            $task->setProject($taskProject);
-        }
-
         // set state
         if (null === $task->getStateName() ) {
             $stateHandlerBuilder = $this->get('task_stock.task_state_handler_builder');
@@ -379,13 +369,9 @@ class TaskController extends Controller
 
         // set owner
         if ($this->isGranted(TaskVoter::PERMISSION_CHANGE_OWNER, $task)) {
-            if ($request->get('owner')) {
-                $task->setOwner(
-                    $em->getReference(
-                        'UserBundle:User',
-                        $request->get('owner')
-                    )
-                );
+            $ownerId = $request->get('owner');
+            if ($ownerId) {
+                $task->setOwner($em->getReference('UserBundle:User', $ownerId));
             }
         }
 
