@@ -1,3 +1,10 @@
+ol.breadcrumb
+  li
+    a(href="/#")= task.get('project').name
+  if task.get('parent')
+    li
+      a(href="/#tasks/" + task.get('parent').id)= task.get('parent').name
+
 .block.top-space
   .title
     = t('task.task') + " #" + task.get('id') + " "
@@ -32,30 +39,23 @@
             = t('Delete')
   .content
     h2= task.get('name')
-    dl.dl-horizontal
-      if task.get('parent')
-        dt= t('Parent')
-        dd
-          a(href="/#tasks/" + task.get('parent').id)= task.get('parent').name
-      if task.get('project')
-        dt= t('task.project')
-        dd= task.get('project').name
-      dt= t('task.createdAt')
-      dd= task.get('date')
-      dt= t('task.owner')
-      dd
+    ul.list-inline
+      li
+        = t('task.createdAt') + ":"
+      li
+        = task.get('date')
+      li
+        = t('task.owner') + ":"
+      li
         img.img-circle(src=task.get('owner').gravatar + "?s=20&d=mm")
         |&nbsp;
         a(href="/#users/" + task.get('owner').id)= task.get('owner').name
-      if task.get('assignee')
-        dt= t('task.assignee')
-        dd
-          img.img-circle(src=task.get('assignee').gravatar + "?s=20&d=mm")
-          |&nbsp;
-          a(href="/#users/" + task.get('assignee').id)= task.get('assignee').name
-
-.block.top-space
-  .title= t('task.description')
+      li
+        = t('task.assignee') + ":"
+      li
+        img.img-circle(src=task.get('assignee').gravatar + "?s=20&d=mm")
+        |&nbsp;
+        a(href="/#users/" + task.get('assignee').id)= task.get('assignee').name
   .content!= task.get('description')
 
 if (task.get('permissions').viewAttachments === true)
@@ -78,14 +78,15 @@ if (task.get('permissions').viewAttachments === true)
     a.btn.btn-success.btn-xs.pull-right#newSubtask
       span.glyphicon.glyphicon-plus
       != "&nbsp;" + t('task.newSubtask')
-  .content
+  .content.no-border
     table.table.table-striped.table-hover
       each subtask in task.get('subtasks')
         tr
           td
             a(href="/#tasks/" + subtask.id)= subtask.name
-          td
-            .label.label-primary= subtask.state.label
+          if subtask.state
+            td
+              .label.label-primary= subtask.state.label
           td.hidden-xs
             if subtask.assignee
               a(href="/#users/" + subtask.assignee.id)
