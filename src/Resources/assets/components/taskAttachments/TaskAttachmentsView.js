@@ -5,11 +5,16 @@ var TaskAttachmentsView = Backbone.View.extend({
     },
 
     initialize: function() {
-        this.listenTo(this.collection, 'change add', this.renderListAsync);
+        this.listenTo(this.collection, 'sync change add', this.renderListAsync);
         this.collection.fetch();
     },
 
     renderListAsync: function() {
+        if (this.collection.models.length === 0) {
+            this.$el.html(app.render('TaskAttachmentsEmptyList'));
+            return;
+        }
+
         this.$el.html(app.render('TaskAttachments', {
             taskId: this.collection.taskId,
             attachments: this.collection.models
