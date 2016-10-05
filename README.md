@@ -43,8 +43,8 @@ class AppKernel extends Kernel
 2) Define required parameters in `./app/config/parameters.yml.dist`:
 ```yaml
 # email server parameters
-notification.from_email.address: some@email.address
-notification.from_email.sender_name: Some sender name
+notification.from_email.address: ~
+notification.from_email.sender_name: ~
 ```
 
 3) Add roles to role hierarchy in file `./app/config/security.yml`:
@@ -114,7 +114,7 @@ This bundle uses [FrontendBundle](https://github.com/sokil/FrontendBundle) for b
 
 This bundle uses [FileStorageBundle](https://github.com/sokil/FileStorageBundle) to handle file uploads.
 
-You need to configure `task_stock.attachments` filesystem yo handle uploads. 
+You need to configure some filesystem to handle uploads, for example `task_stock.attachments`. 
 Add to your `./app/config/config.yml`:
 
 ```yaml
@@ -134,4 +134,11 @@ knp_gaufrette:
     filesystems:
         task_stock.attachments:
             adapter: task_stock.attachments
+```
+
+Then add this filesystem to bundle's config at `./app/config/config.yml`:
+
+```yaml
+task_stock:
+   attachments_filesystem: "task_stock.attachments"
 ```
