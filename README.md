@@ -2,6 +2,12 @@
 
 Task tracker bundle
 
+* [Installation](#installation)
+* [Configuration](#configuration)
+    * [Basic bundle configuration](#basic-bundle-configuration)
+    * [Configuring SPA](#configuring-spa)
+    * [Configuring file storage](#configuring-file-storage)
+
 ## Installation
 
 Add dependency to composer:
@@ -9,7 +15,17 @@ Add dependency to composer:
 composer.phar reequire sokil/task-stock-bundle
 ```
 
-Add bundle to AppKernel:
+## Configuration
+
+This bundle depends from other bundles, which also require configuration. If you yet not using it, configure them:
+* [FrontendBundle](https://github.com/sokil/FrontendBundle/blob/master/README.md#installation)
+* [FileStorageBundle](https://github.com/sokil/FileStorageBundle/blob/master/README.md#installation)
+* [NotificationBundle](https://github.com/sokil/NotificationBundle/blob/master/README.md#installation)
+* [UserBundle](https://github.com/sokil/UserBundle/blob/master/README.md#installation)
+
+### Basic bundle configuration
+
+1) Add bundle to AppKernel:
 ```php
 <?php
 
@@ -24,14 +40,14 @@ class AppKernel extends Kernel
 }
 ```
 
-Define required parameters in `./app/config/parameters.yml.dist`:
+2) Define required parameters in `./app/config/parameters.yml.dist`:
 ```yaml
 # email server parameters
-notification.from_email.address: some@email.address
-notification.from_email.sender_name: Some sender name
+notification.from_email.address: ~
+notification.from_email.sender_name: ~
 ```
 
-Add roles to role hierarchy in file `./app/config/security.yml`:
+3) Add roles to role hierarchy in file `./app/config/security.yml`:
 ```yaml
 security:
     role_hierarchy:
@@ -41,13 +57,13 @@ security:
         ROLE_TASK_PROJECT_MANAGER:  [ROLE_TASK_PROJECT_VIEWER]
 ```
 
-Register routing in `./app/console/routing.yml`:
+4) Register routing in `./app/console/routing.yml`:
 ```yaml
 task_stock:
     resource: "@TaskStockBundle/Resources/config/routing.yml"
 ```
 
-Bundle uses assetic so you need to register it in assetic config and do some configuration:
+5) Bundle uses assetic so you need to register it in assetic config and do some configuration:
 ```yaml
 assetic:
     bundles:
@@ -59,7 +75,10 @@ assetic:
 
 Paramater `varailbes` passes some valiables to assets, tham will be used to build path to assets.
 
+### Configuring SPA
+
 This bundle uses [FrontendBundle](https://github.com/sokil/FrontendBundle) for building frontend, so configure SPA, and add some dependencies to it:
+
 ```twig
 {% import "@FrontendBundle/Resources/views/macro.html.twig" as frontend %}
 {% import "@TaskStockBundle/Resources/views/Spa/macro.html.twig" as taskSpa %}
@@ -91,10 +110,35 @@ This bundle uses [FrontendBundle](https://github.com/sokil/FrontendBundle) for b
 </script>
 ```
 
-This bundle also depends from other bundles, which also require configuration. If you yet not using it, configure them:
-* [FrontendBundle](https://github.com/sokil/FrontendBundle/blob/master/README.md#installation)
-* [NotificationBundle](https://github.com/sokil/NotificationBundle/blob/master/README.md#installation)
-* [UserBundle](https://github.com/sokil/UserBundle/blob/master/README.md#installation)
-* [FileStorageBundle](https://github.com/sokil/FileStorageBundle/blob/master/README.md#installation)
+### Configuring file storage
 
-## Configuring task states
+This bundle uses [FileStorageBundle](https://github.com/sokil/FileStorageBundle) to handle file uploads.
+
+You need to configure some filesystem to handle uploads, for example `task_stock.attachments`. 
+Add to your `./app/config/config.yml`:
+
+```yaml
+knp_gaufrette:
+    factories:
+        - "%kernel.root_dir%/../vendor/sokil/file-storage-bundle/src/Resources/config/adapter_factories.xml"
+    adapters:
+        task_stock.attachments:
+            internal:
+                pathStrategy:
+                    name: chunkpath
+                    options:
+                        chunksNumber: 2
+                        chunkSize: 3
+                        preserveExtension: false
+                        baseDir: "%kernel.root_dir%/files/task_attach"
+    filesystems:
+        task_stock.attachments:
+            adapter: task_stock.attachments
+```
+
+Then add this filesystem to bundle's config at `./app/config/config.yml`:
+
+```yaml
+task_stock:
+   attachments_filesystem: "task_stock.attachments"
+```
