@@ -15,10 +15,20 @@ var TaskAttachmentsView = Backbone.View.extend({
             return;
         }
 
-        this.$el.html(app.render('TaskAttachments', {
-            taskId: this.collection.taskId,
-            attachments: this.collection.models
-        }));
+        require(['taskstock/js/moment/moment.min'], function(moment) {
+            this.$el.html(app.render('TaskAttachments', {
+                taskId: this.collection.taskId,
+                attachments: _.map(this.collection.models, function(attachment) {
+                    return {
+                        id: attachment.get('id'),
+                        path: attachment.get('path'),
+                        name: attachment.get('name'),
+                        size: attachment.getSize(),
+                        date: moment(attachment.getCreatedAt()).format('LLLL') + " (" + moment(attachment.getCreatedAt()).fromNow() + ")"
+                    };
+                })
+            }));
+        }.bind(this));
     },
 
     deleteEventHandler: function(e) {
