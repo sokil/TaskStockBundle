@@ -1,7 +1,4 @@
 form(action=action, method="POST")
-  .form-group
-    label Url
-    input.form-control(name="url", value = category.get('url'))
   ul.nav.nav-pills.bottom-space
     each locale in app.locales
       li(class=(locale === app.locale) ? "active" : null)

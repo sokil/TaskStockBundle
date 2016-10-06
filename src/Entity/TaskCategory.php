@@ -22,11 +22,6 @@ class TaskCategory implements LocalizedInterface
     protected $id;
 
     /**
-     * @ORM\Column(type="string")
-     */
-    protected $url;
-
-    /**
      * @var \Doctrine\Common\Collections\Collection
      * @ORM\OneToMany(
      *  targetEntity="Sokil\TaskStockBundle\Entity\TaskCategoryLocalization",
@@ -53,29 +48,6 @@ class TaskCategory implements LocalizedInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set url
-     *
-     * @param string $url
-     * @return TaskCategory
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * Get url
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
     }
 
     public function __toString()

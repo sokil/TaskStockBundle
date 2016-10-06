@@ -55,7 +55,6 @@ class TaskCategoriesController extends Controller
 
         $response = [
             'id'    => $taskCategory->getId(),
-            'url'   => $taskCategory->getUrl(),
         ];
 
         $localizations = $taskCategory->getLocalizations();
@@ -93,7 +92,7 @@ class TaskCategoriesController extends Controller
                 ->find($id);
 
             if (!$taskCategory) {
-                throw new NotFoundHttpException;
+                throw new NotFoundHttpException();
             }
         } else {
             $taskCategory = new TaskCategory();
@@ -105,7 +104,6 @@ class TaskCategoriesController extends Controller
 
         try {
             // common fields
-            $taskCategory->setUrl($request->get('url'));
             $em->persist($taskCategory);
             $em->flush();
             
