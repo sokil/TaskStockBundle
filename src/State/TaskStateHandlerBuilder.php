@@ -18,6 +18,14 @@ class TaskStateHandlerBuilder
         $this->stateConfiguration = $configuration;
     }
 
+    /**
+     * @return array
+     */
+    public function getStateConfigurations()
+    {
+        return $this->stateConfiguration;
+    }
+
     private function getStateConfiguration($stateSchemaId)
     {
         foreach ($this->stateConfiguration as $stateConfiguration) {

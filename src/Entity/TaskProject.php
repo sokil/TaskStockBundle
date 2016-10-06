@@ -60,10 +60,14 @@ class TaskProject
     protected $notificationSchemaId;
 
     /**
-     * @ORM\Column(type="integer", name="state_schema_id")
-     * @Assert\NotBlank(message="task.state_schema_not_set")
+     * @ORM\Column(type="integer", name="state_schema_id", nullable=true)
      */
-    protected $stateSchemaId = 0;
+    protected $stateSchemaId;
+
+    /**
+     * @ORM\Column(type="integer", name="task_category_schema_id", nullable=true)
+     */
+    protected $taskCategorySchemaId;
 
     public function __construct()
     {
@@ -230,6 +234,22 @@ class TaskProject
         }
 
         $this->stateSchemaId = (int) $id;
+
+        return $this;
+    }
+
+    public function getTaskCategorySchemaId()
+    {
+        return $this->taskCategorySchemaId;
+    }
+
+    public function setTaskCategorySchemaId($id)
+    {
+        if (is_numeric($id)) {
+            $this->taskCategorySchemaId = (int) $id;
+        } else {
+            $this->taskCategorySchemaId = null;
+        }
 
         return $this;
     }

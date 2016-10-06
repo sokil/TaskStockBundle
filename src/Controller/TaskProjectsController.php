@@ -2,6 +2,7 @@
 
 namespace Sokil\TaskStockBundle\Controller;
 
+use Sokil\TaskStockBundle\Entity\TaskCategorySchema;
 use Sokil\TaskStockBundle\Entity\TaskProject;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -89,6 +90,23 @@ class TaskProjectsController extends Controller
             throw new NotFoundHttpException;
         }
 
+        // common parameters
+        $response = [
+            'id'    => $project->getId(),
+            'name'   => $project->getName(),
+            'code'  => $project->getCode(),
+            'description' => $project->getDescription(),
+            'permissions' => [
+                'edit' => $this->isGranted('ROLE_TASK_PROJECT_MANAGER'),
+            ],
+        ];
+
+        // notification
+        $notificationSchemaId = $project->getNotificationSchemaId();
+        if ($notificationSchemaId) {
+            $response['notificationSchemaId'] = $notificationSchemaId;
+        }
+
         // state configurations
         $stateSchemas = array_map(
             function($stateSchema) {
@@ -101,19 +119,31 @@ class TaskProjectsController extends Controller
                 ->get('task_stock.task_state_handler_builder')
                 ->getStateConfigurations()
         );
+        if ($stateSchemas) {
+            $response['stateSchema'] = [
+                'id' => $project->getStateSchemaId(),
+                'list' => $stateSchemas,
+            ];
+        }
 
-        return new JsonResponse([
-            'id'    => $project->getId(),
-            'name'   => $project->getName(),
-            'code'  => $project->getCode(),
-            'description' => $project->getDescription(),
-            'notificationSchemaId' => $project->getNotificationSchemaId(),
-            'stateSchemaId' => $project->getStateSchemaId(),
-            'permissions' => [
-                'edit' => $this->isGranted('ROLE_TASK_PROJECT_MANAGER'),
-            ],
-            'stateSchemas' => $stateSchemas,
-        ]);
+        // category schema
+        $response['categorySchema'] = [
+            'list' => array_map(
+                function(TaskCategorySchema $categorySchema) {
+                    return [
+                        'id' => $categorySchema->getId(),
+                        'name' => $categorySchema->getName(),
+                    ];
+                },
+                $this->getDoctrine()->getRepository('TaskStockBundle:TaskCategorySchema')->findAll()
+            ),
+        ];
+        if (!empty($categorySchemaId)) {
+            $response['categorySchema']['id'] = $project->getTaskCategorySchemaId();
+        }
+
+        // show response
+        return new JsonResponse($response);
     }
 
     /**
