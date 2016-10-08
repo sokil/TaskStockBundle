@@ -125,15 +125,17 @@ class TaskNormalizer implements NormalizerInterface
                 ->getCategories()
                 ->toArray();
 
-            $taskArray['category']['list'] = array_map(
-                function(TaskCategory $category) {
-                    return [
-                        'id' => $category->getId(),
-                        'name' => $category->getLocalization($this->locale)->getName(),
-                    ];
-                },
-                $categoryList
-            );
+            if ($categoryList) {
+                $taskArray['category']['list'] = array_map(
+                    function(TaskCategory $category) {
+                        return [
+                            'id' => $category->getId(),
+                            'name' => $category->getLocalization($this->locale)->getName(),
+                        ];
+                    },
+                    $categoryList
+                );
+            }
         }
 
         // get state handler
