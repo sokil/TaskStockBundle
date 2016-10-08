@@ -90,63 +90,12 @@ class TaskProjectsController extends Controller
             throw new NotFoundHttpException;
         }
 
-        // common parameters
-        $response = [
-            'id'    => $project->getId(),
-            'name'   => $project->getName(),
-            'code'  => $project->getCode(),
-            'description' => $project->getDescription(),
-            'permissions' => [
-                'edit' => $this->isGranted('ROLE_TASK_PROJECT_MANAGER'),
-            ],
-        ];
-
-        // notification
-        $notificationSchemaId = $project->getNotificationSchemaId();
-        if ($notificationSchemaId) {
-            $response['notificationSchemaId'] = $notificationSchemaId;
-        }
-
-        // state configurations
-        $stateSchemas = array_map(
-            function($stateSchema) {
-                return [
-                    'id' => $stateSchema['id'],
-                    'name' => $stateSchema['name'],
-                ];
-            },
-            $this
-                ->get('task_stock.task_state_handler_builder')
-                ->getStateConfigurations()
-        );
-
-        if ($stateSchemas) {
-            $response['stateSchema'] = [
-                'id' => $project->getStateSchemaId(),
-                'list' => $stateSchemas,
-            ];
-        }
-
-        // category schema
-        $categorySchemaList = array_map(
-            function(TaskCategorySchema $categorySchema) {
-                return [
-                    'id' => $categorySchema->getId(),
-                    'name' => $categorySchema->getName(),
-                ];
-            },
-            $this->getDoctrine()->getRepository('TaskStockBundle:TaskCategorySchema')->findAll()
-        );
-
-        if ($categorySchemaList) {
-            $response['categorySchema'] = [
-                'id' => $project->getTaskCategorySchemaId(),
-                'list' => $categorySchemaList,
-            ];
-        }
+        $taskProjectArray = $this
+            ->get('task_stock.task_project_normalizer')
+            ->normalize($project);
 
         // show response
-        return new JsonResponse($response);
+        return new JsonResponse($taskProjectArray);
     }
 
     /**

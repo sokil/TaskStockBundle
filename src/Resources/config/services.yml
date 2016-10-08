@@ -85,6 +85,31 @@ services:
            - { name: security.voter }
 
     ################################################
+    #             Serializers                      #
+    ################################################
+    task_stock.task_project_normalizer:
+      class: Sokil\TaskStockBundle\Serializer\Normalizer\TaskProjectNormalizer
+      arguments:
+        - '@task_stock.repository.task_category_schema'
+        - '@task_stock.task_state_handler_builder'
+        - '@security.authorization_checker'
+
+    ################################################
+    #             Repositories                     #
+    ################################################
+    task_stock.repository.task_project:
+      class: Doctrine\ORM\EntityRepository
+      factory: ['@doctrine.orm.default_entity_manager', getRepository]
+      arguments:
+        - 'TaskStockBundle:TaskProject'
+
+    task_stock.repository.task_category_schema:
+      class: Doctrine\ORM\EntityRepository
+      factory: ['@doctrine.orm.default_entity_manager', getRepository]
+      arguments:
+        - 'TaskStockBundle:TaskCategorySchema'
+
+    ################################################
     #             Others                           #
     ################################################
 
