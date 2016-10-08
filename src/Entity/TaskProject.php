@@ -245,12 +245,18 @@ class TaskProject
 
     public function setTaskCategorySchemaId($id)
     {
-        if (is_numeric($id)) {
-            $this->taskCategorySchemaId = (int) $id;
-        } else {
-            $this->taskCategorySchemaId = null;
+        if (!is_numeric($id)) {
+            throw new \InvalidArgumentException('Invalid task category schema passed');
         }
 
+        $this->taskCategorySchemaId = (int) $id;
+
+        return $this;
+    }
+
+    public function clearTaskCategorySchema()
+    {
+        $this->taskCategorySchemaId = null;
         return $this;
     }
 

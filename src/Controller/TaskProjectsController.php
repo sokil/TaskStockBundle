@@ -144,6 +144,8 @@ class TaskProjectsController extends Controller
         $taskСategorySchemaId = $request->get('taskСategorySchemaId');
         if (is_numeric($taskСategorySchemaId)) {
             $project->setTaskCategorySchemaId($taskСategorySchemaId);
+        } else {
+            $project->clearTaskCategorySchema();
         }
 
         // validate
