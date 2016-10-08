@@ -8,19 +8,27 @@ form(action=action, method="POST")
   .form-group
     label= t('task_project_parameters.desciption')
     textarea.form-control(name="description", rows="5")= project.get('description') ? project.get('description') : null
-  .form-group
-    label= t('task_project_parameters.notification_schema')
-    select.form-control(name="notificationSchemaId", value = project.get('notificationSchemaId'))
-      option(value='')= t('task_project_parameters.no_notification_schema')
-      each schema in notificationSchemas
-        - var selected = project.get('notificationSchemaId') === schema.get('id')
-        option(value=schema.get('id'), selected=selected)= schema.get('name')
+  if (notificationSchemas.length > 0)
+    .form-group
+      label= t('task_project_parameters.notification_schema')
+      select.form-control(name="notificationSchemaId", value = project.get('notificationSchemaId'))
+        option(value='')= t('task_project_parameters.no_notification_schema')
+        each schema in notificationSchemas
+          - var selected = project.get('notificationSchemaId') === schema.get('id')
+          option(value=schema.get('id'), selected=selected)= schema.get('name')
   if (project.get('stateSchema'))
     .form-group
       label= t('task_project_parameters.state_schema')
       select.form-control(name="stateSchemaId", value = project.get('stateSchema').id)
         each schema in project.get('stateSchema').list
           - var selected = project.get('stateSchema').id === schema['id']
+          option(value=schema['id'], selected=selected)= schema['name']
+  if (project.get('categorySchema').list.length > 0)
+    .form-group
+      label= t('task_project_parameters.task_category_schema')
+      select.form-control(name="taskСategorySchemaId", value = project.get('categorySchema').id)
+        each schema in project.get('categorySchema').list
+          - var selected = project.get('categorySchema').id === schema['id']
           option(value=schema['id'], selected=selected)= schema['name']
   .form-group
     input.btn.btn-success(type="submit", value=t('Save'))

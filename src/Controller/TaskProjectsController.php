@@ -119,6 +119,7 @@ class TaskProjectsController extends Controller
                 ->get('task_stock.task_state_handler_builder')
                 ->getStateConfigurations()
         );
+
         if ($stateSchemas) {
             $response['stateSchema'] = [
                 'id' => $project->getStateSchemaId(),
@@ -127,19 +128,21 @@ class TaskProjectsController extends Controller
         }
 
         // category schema
-        $response['categorySchema'] = [
-            'list' => array_map(
-                function(TaskCategorySchema $categorySchema) {
-                    return [
-                        'id' => $categorySchema->getId(),
-                        'name' => $categorySchema->getName(),
-                    ];
-                },
-                $this->getDoctrine()->getRepository('TaskStockBundle:TaskCategorySchema')->findAll()
-            ),
-        ];
-        if (!empty($categorySchemaId)) {
-            $response['categorySchema']['id'] = $project->getTaskCategorySchemaId();
+        $categorySchemaList = array_map(
+            function(TaskCategorySchema $categorySchema) {
+                return [
+                    'id' => $categorySchema->getId(),
+                    'name' => $categorySchema->getName(),
+                ];
+            },
+            $this->getDoctrine()->getRepository('TaskStockBundle:TaskCategorySchema')->findAll()
+        );
+
+        if ($categorySchemaList) {
+            $response['categorySchema'] = [
+                'id' => $project->getTaskCategorySchemaId(),
+                'list' => $categorySchemaList,
+            ];
         }
 
         // show response
@@ -187,6 +190,11 @@ class TaskProjectsController extends Controller
         $stateSchemaId = $request->get('stateSchemaId');
         if (is_numeric($stateSchemaId)) {
             $project->setStateSchemaId($stateSchemaId);
+        }
+
+        $taskСategorySchemaId = $request->get('taskСategorySchemaId');
+        if (is_numeric($taskСategorySchemaId)) {
+            $project->setTaskCategorySchemaId($taskСategorySchemaId);
         }
 
         // validate
