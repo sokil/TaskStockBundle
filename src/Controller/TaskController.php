@@ -74,10 +74,10 @@ class TaskController extends Controller
 
         // get current locale
         $locale = $request->getLocale();
-        
-        // return response
-        return new JsonResponse([
-            'tasks' => array_map(function(Task $task) use($locale) {
+
+        // tasks list
+        $tasksList = array_map(
+            function(Task $task) use($locale) {
                 // category
                 $category = $task->getCategory();
 
@@ -91,11 +91,21 @@ class TaskController extends Controller
                         'id' => $category->getId(),
                         'name' => $category->getLocalization($locale)->getName(),
                     ] : null,
+                    'project' => [
+                        'id' => $task->getProject()->getId(),
+                        'name' => $task->getProject()->getName(),
+                    ],
                     'permissions' => [
                         TaskVoter::PERMISSION_EDIT => $this->isGranted('edit', $task),
                     ],
                 ];
-            }, $tasks),
+            },
+            $tasks
+        );
+
+        // return response
+        return new JsonResponse([
+            'tasks' => $tasksList,
             'tasksCount' => $paginator->count(),
         ]);
     }
@@ -133,134 +143,22 @@ class TaskController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        // get category of task
-        $taskCategory = $task->getCategory();
-
-        // get task owner
-        $taskOwner = $task->getOwner();
-
-        // get task assignee
-        $taskAssignee = $task->getAssignee();
-
-        // task project
-        $taskProject = $task->getProject();
-
-        // editable
-        $permissions = [
-            'edit' => $this->isGranted(TaskVoter::PERMISSION_EDIT, $task),
-            'changeProject' => $this->isGranted(TaskVoter::PERMISSION_CHANGE_PROJECT, $task),
-            'changeAssignee' => $this->isGranted(TaskVoter::PERMISSION_CHANGE_ASSIGNEE, $task),
-            'changeOwner' => $this->isGranted(TaskVoter::PERMISSION_CHANGE_OWNER, $task),
-            'viewAttachments' => true,
-        ];
-
-        // return json response
-        $translator = $this->get('translator');
-
-        if (!$id) {
-            return new JsonResponse([
-                'permissions' => $permissions,
-            ]);
-        }
-
-
-        // build response
-        $response = [
-            'id'            => $task->getId(),
-            'name'          => $task->getName(),
-            'description'   => $task->getDescription(),
-            'date'          => $task->getDate('d.m.Y H:i:s'),
-            'owner' => [
-                'id' => $taskOwner->getId(),
-                'name' => $taskOwner->getName(),
-                'gravatar' => $taskOwner->getGravatarDefaultUrl(),
-            ],
-            'assignee' => $taskAssignee ? [
-                'id' => $taskAssignee->getId(),
-                'name' => $taskAssignee->getName(),
-                'gravatar' => $taskAssignee->getGravatarDefaultUrl(),
-            ] : null,
-            'project' => $taskProject ? [
-                'id' => $taskProject->getId(),
-                'code' => $taskProject->getCode(),
-                'name' => $taskProject->getName(),
-            ] : null,
-            'category' => $taskCategory ? [
-                'id' => $taskCategory->getId(),
-                'name' => $taskCategory->getLocalization($request->getLocale())->getName(),
-            ] : null,
-            'permissions' => $permissions,
-        ];
-
-        // get state handler
-        /* @var $stateHandler TaskStateHandler */
-        $stateHandlerBuilder = $this->get('task_stock.task_state_handler_builder');
-        if ($task->hasStates()) {
-            $stateHandler = $stateHandlerBuilder->build($task);
-            $taskState = $stateHandler->getCurrentState();
-
-            $response['state'] = [
-                'name'  => $taskState->getName(),
-                'label' => $translator->trans($taskState->getMetadata('label')),
-            ];
-
-            $response['nextStates'] = array_map(function(\Sokil\State\Transition $transition) use (
-                $translator
-            ) {
-                return [
-                    'label' => $translator->trans($transition->getMetadata('label')),
-                    'state' => $transition->getResultingStateName(),
-                    'icon' => $transition->getMetadata('icon'),
-                ];
-            }, $stateHandler->getNextStateTransitions());
-        }
-
-        // add subtasks
+        $normalizeGroups = [];
         if ($request->get('subtasks')) {
-            $response['subtasks'] = $task->getSubTasks()->map(function(Task $subTask) use(
-                $translator,
-                $stateHandlerBuilder
-            ) {
-                $subtaskData = [
-                    'id' => $subTask->getId(),
-                    'name' => $subTask->getName(),
-                ];
-
-                // sub task state
-                /* @var $stateHandler TaskStateHandler */
-                if ($subTask->hasStates()) {
-                    $stateHandler = $stateHandlerBuilder->build($subTask);
-                    $subTaskState = $stateHandler->getCurrentState();
-                    $subtaskData['state'] = [
-                        'name'  => $subTaskState->getName(),
-                        'label' => $translator->trans($subTaskState->getMetadata('label')),
-                    ];
-                }
-
-                // assignee
-                $assignee = $subTask->getAssignee();
-                if ($assignee) {
-                    $subtaskData['assignee'] =[
-                        'id'        => $assignee->getId(),
-                        'name'      => $assignee->getName(),
-                        'gravatar'  => $assignee->getGravatarDefaultUrl(),
-                    ];
-                }
-
-                return $subtaskData;
-            })->toArray();
+            $normalizeGroups[] = 'withSubdtasks';
         }
 
-        // add parent task
-        $parentTask = $task->getParent();
-        if ($parentTask) {
-            $response['parent'] = [
-                'id' => $parentTask->getId(),
-                'name' => $parentTask->getName(),
-            ];
-        }
+        $taskArray = $this
+            ->get('task_stock.task_normalizer')
+            ->normalize(
+                $task,
+                null,
+                [
+                    'groups' => $normalizeGroups,
+                ]
+            );
 
-        return new JsonResponse($response);
+        return new JsonResponse($taskArray);
     }
 
     /**

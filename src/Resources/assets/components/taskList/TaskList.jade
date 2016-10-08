@@ -3,9 +3,13 @@ each task in tasks
     .media-body
       h4.media-heading
         a(href="/#tasks/" + task.get('id'))= task.get('name')
-      .label.label-info= task.get('date')
-      if (task.get('category'))
-        | 
-        .label.label-success= task.get('category').name
+      ul.list-inline
+        li
+          .label.label-warning= task.get('project').name
+        li
+          .label.label-info= task.get('date')
+        if (task.get('category'))
+          li
+            .label.label-success= task.get('category').name
       p= task.get('description')
 .pagination-wrap

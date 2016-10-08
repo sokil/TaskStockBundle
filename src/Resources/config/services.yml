@@ -87,6 +87,14 @@ services:
     ################################################
     #             Serializers                      #
     ################################################
+    task_stock.task_normalizer:
+      class: Sokil\TaskStockBundle\Serializer\Normalizer\TaskNormalizer
+      arguments:
+        - '@task_stock.task_state_handler_builder'
+        - '@security.authorization_checker'
+        - '@translator'
+        - %locale%
+
     task_stock.task_project_normalizer:
       class: Sokil\TaskStockBundle\Serializer\Normalizer\TaskProjectNormalizer
       arguments:
