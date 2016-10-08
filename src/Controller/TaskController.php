@@ -145,7 +145,10 @@ class TaskController extends Controller
 
         $normalizeGroups = [];
         if ($request->get('subtasks')) {
-            $normalizeGroups[] = 'withSubdtasks';
+            $normalizeGroups[] = 'subdtasks';
+        }
+        if ($request->get('edit')) {
+            $normalizeGroups[] = 'edit';
         }
 
         $taskArray = $this

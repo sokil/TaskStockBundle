@@ -2,7 +2,9 @@
 
 namespace Sokil\TaskStockBundle\Serializer\Normalizer;
 
+use Doctrine\ORM\EntityRepository;
 use Sokil\TaskStockBundle\Entity\Task;
+use Sokil\TaskStockBundle\Entity\TaskCategory;
 use Sokil\TaskStockBundle\State\TaskStateHandler;
 use Sokil\TaskStockBundle\State\TaskStateHandlerBuilder;
 use Sokil\TaskStockBundle\Voter\TaskVoter;
@@ -12,6 +14,11 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class TaskNormalizer implements NormalizerInterface
 {
+    /**
+     * @var EntityRepository
+     */
+    private $taskCategorySchemaRepository;
+
     /**
      * @var TaskStateHandlerBuilder
      */
@@ -36,11 +43,13 @@ class TaskNormalizer implements NormalizerInterface
      * @param TranslatorInterface $translator
      */
     public function __construct(
+        EntityRepository $taskProjectRepository,
         TaskStateHandlerBuilder $taskStateHandlerBuilder,
         AuthorizationChecker $authorizationChecker,
         TranslatorInterface $translator,
         $locale
     ) {
+        $this->taskCategorySchemaRepository = $taskProjectRepository;
         $this->taskStateHandlerBuilder = $taskStateHandlerBuilder;
         $this->authorizationChecker = $authorizationChecker;
         $this->translator = $translator;
@@ -96,12 +105,36 @@ class TaskNormalizer implements NormalizerInterface
                 'code' => $taskProject->getCode(),
                 'name' => $taskProject->getName(),
             ] : null,
-            'category' => $taskCategory ? [
-                'id' => $taskCategory->getId(),
-                'name' => $taskCategory->getLocalization($this->locale)->getName(),
-            ] : null,
             'permissions' => $permissions,
         ];
+
+        // category
+        if ($taskCategory) {
+            $taskArray['category'] = [
+                'id' => $taskCategory->getId(),
+                'name' => $taskCategory->getLocalization($this->locale)->getName(),
+            ];
+        }
+
+        //  allowed categories
+        if (!empty($context['groups']) && in_array('edit', $context['groups'])) {
+
+            $categoryList = $this
+                ->taskCategorySchemaRepository
+                ->find($task->getProject()->getTaskCategorySchemaId())
+                ->getCategories()
+                ->toArray();
+
+            $taskArray['category']['list'] = array_map(
+                function(TaskCategory $category) {
+                    return [
+                        'id' => $category->getId(),
+                        'name' => $category->getLocalization($this->locale)->getName(),
+                    ];
+                },
+                $categoryList
+            );
+        }
 
         // get state handler
         /* @var $stateHandler TaskStateHandler */
@@ -124,7 +157,7 @@ class TaskNormalizer implements NormalizerInterface
         }
 
         // add sub tasks
-        if (!empty($context['groups']) && in_array('withSubdtasks', $context['groups'])) {
+        if (!empty($context['groups']) && in_array('subdtasks', $context['groups'])) {
             $taskArray['subtasks'] = $task->getSubTasks()->map(function(Task $subTask) {
                 $subtaskData = [
                     'id' => $subTask->getId(),

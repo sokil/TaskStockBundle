@@ -90,6 +90,7 @@ services:
     task_stock.task_normalizer:
       class: Sokil\TaskStockBundle\Serializer\Normalizer\TaskNormalizer
       arguments:
+        - '@task_stock.repository.task_category_schema'
         - '@task_stock.task_state_handler_builder'
         - '@security.authorization_checker'
         - '@translator'

@@ -17,10 +17,14 @@ var TaskEditorView = Marionette.ItemView.extend({
         // init model sync
         if (this.model.isNew()) {
             this.listenToOnce(this.model, 'syncDefaults', this.renderAsync);
-            this.model.fetchDefaults();
+            this.model.fetchDefaults({
+                data: {edit: true}
+            });
         } else {
             this.listenToOnce(this.model, 'sync', this.renderAsync);
-            this.model.fetch();
+            this.model.fetch({
+                data: {edit: true}
+            });
         }
     },
 
@@ -30,160 +34,155 @@ var TaskEditorView = Marionette.ItemView.extend({
     
     renderAsync: function() {
         var self = this;
-        app.container
-            .get('taskCategories')
-            .done(function(collection) {
-                // render editor
-                var formHTML = app.render('TaskEditorForm', {
-                    task: self.model,
-                    categories: collection.models,
-                    modal: self.modal
-                });
 
-                if (self.modal) {
-                    self.$el.html(formHTML);
-                } else {
-                    self.$el.html(app.render('TaskEditorPage'));
-                    self.$el.find('.content').html(formHTML);
-                }
+        // render editor
+        var formHTML = app.render('TaskEditorForm', {
+            task: this.model,
+            modal: this.modal
+        });
 
-                // init tinymce
-                require(['tinymce'], function(tinymce) {
-                    // init
-                    tinymce.init({
-                        selector: '#taskEditorForm [name="description"]',
-                        plugins: "table link image code fullscreen textcolor",
-                        menubar: false,
-                        statusbar: false,
-                        toolbar: [
-                            [
-                                "undo redo",
-                                "styleselect bold italic",
-                                "forecolor backcolor",
-                                "alignleft aligncenter alignright",
-                                "link unlink",
-                                "table",
-                                "image",
-                                "bullist numlist",
-                                "outdent indent",
-                                "code fullscreen"
-                            ].join(" | ")
-                        ],
-                        setup: function(editor) {
-                            self.tinymceEditor = editor;
-                        },
-                        resize: true
-                    });
-                });
+        if (this.modal) {
+            this.$el.html(formHTML);
+        } else {
+            this.$el.html(app.render('TaskEditorPage'));
+            this.$el.find('.content').html(formHTML);
+        }
 
-                app.loadCss([
-                    '/bundles/taskstock/css/typeahead.css'
-                ]);
-
-                require(['typeahead', 'bloodhound'], function() {
-                    if (self.model.hasPermission('changeAssignee')) {
-                        // assignee
-                        $('#txtAssignee')
-                            .typeahead(null, {
-                                name: 'assignee',
-                                source: new Bloodhound({
-                                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                                    datumTokenizer: function (datum) {
-                                        return Bloodhound.tokenizers.whitespace(datum.name);
-                                    },
-                                    identify: function (datum) {
-                                        return datum.id;
-                                    },
-                                    remote: {
-                                        url: '/users?name=*',
-                                        wildcard: '*',
-                                        transform: function (response) {
-                                            return response.users;
-                                        }
-                                    }
-                                }),
-                                display: function(datum) {
-                                    return datum.name;
-                                },
-                                templates: {
-                                    notFound: '<span class="empty">' + app.t('No users found') + '</span>',
-                                    suggestion: _.template('<div><img src="<%= gravatar %>?s=40&d=mm" class="img-circle" /> <%= name %></div>')
-                                }
-                            })
-                            .bind('typeahead:selected', function (e, datum) {
-                                self.$el.find('input[name="assignee"]').val(datum.id);
-                            });
-                    }
-
-                    // owner
-                    if (self.model.hasPermission('changeOwner')) {
-                        $('#txtOwner')
-                            .typeahead(null, {
-                                name: 'owner',
-                                source: new Bloodhound({
-                                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                                    datumTokenizer: function (datum) {
-                                        return Bloodhound.tokenizers.whitespace(datum.name);
-                                    },
-                                    identify: function (datum) {
-                                        return datum.id;
-                                    },
-                                    remote: {
-                                        url: '/users?name=*',
-                                        wildcard: '*',
-                                        transform: function (response) {
-                                            return response.users;
-                                        }
-                                    }
-                                }),
-                                display: function(datum) {
-                                    return datum.name;
-                                },
-                                templates: {
-                                    notFound: '<span class="empty">' + app.t('No users found') + '</span>',
-                                    suggestion: _.template('<div><img src="<%= gravatar %>?s=40&d=mm" class="img-circle" /> <%= name %></div>')
-                                }
-                            })
-                            .bind('typeahead:selected', function (e, datum) {
-                                self.$el.find('input[name="owner"]').val(datum.id);
-                            });
-
-                    }
-
-                    // project
-                    if (self.model.hasPermission('changeProject')) {
-                        $('#txtProject')
-                            .typeahead(null, {
-                                name: 'project',
-                                display: 'name',
-                                source: new Bloodhound({
-                                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                                    datumTokenizer: function (datum) {
-                                        return Bloodhound.tokenizers.whitespace(datum.name);
-                                    },
-                                    identify: function (datum) {
-                                        return datum.id;
-                                    },
-                                    prefetch: {
-                                        cache: false,
-                                        url: '/tasks/projects',
-                                        transform: function (response) {
-                                            return response.projects;
-                                        }
-                                    }
-                                }),
-                                templates: {
-                                    notFound: '<span class="empty">' + app.t('No projects found') + '</span>',
-                                    suggestion: _.template('<div><%= name %></div>')
-                                }
-                            })
-                            .bind('typeahead:selected', function (e, datum) {
-                                self.$el.find('input[name="project"]').val(datum.id);
-                            });
-                    }
-                });
-
+        // init tinymce
+        require(['tinymce'], function(tinymce) {
+            // init
+            tinymce.init({
+                selector: '#taskEditorForm [name="description"]',
+                plugins: "table link image code fullscreen textcolor",
+                menubar: false,
+                statusbar: false,
+                toolbar: [
+                    [
+                        "undo redo",
+                        "styleselect bold italic",
+                        "forecolor backcolor",
+                        "alignleft aligncenter alignright",
+                        "link unlink",
+                        "table",
+                        "image",
+                        "bullist numlist",
+                        "outdent indent",
+                        "code fullscreen"
+                    ].join(" | ")
+                ],
+                setup: function(editor) {
+                    self.tinymceEditor = editor;
+                },
+                resize: true
             });
+        });
+
+        app.loadCss([
+            '/bundles/taskstock/css/typeahead.css'
+        ]);
+
+        require(['typeahead', 'bloodhound'], function() {
+            if (self.model.hasPermission('changeAssignee')) {
+                // assignee
+                $('#txtAssignee')
+                    .typeahead(null, {
+                        name: 'assignee',
+                        source: new Bloodhound({
+                            queryTokenizer: Bloodhound.tokenizers.whitespace,
+                            datumTokenizer: function (datum) {
+                                return Bloodhound.tokenizers.whitespace(datum.name);
+                            },
+                            identify: function (datum) {
+                                return datum.id;
+                            },
+                            remote: {
+                                url: '/users?name=*',
+                                wildcard: '*',
+                                transform: function (response) {
+                                    return response.users;
+                                }
+                            }
+                        }),
+                        display: function(datum) {
+                            return datum.name;
+                        },
+                        templates: {
+                            notFound: '<span class="empty">' + app.t('No users found') + '</span>',
+                            suggestion: _.template('<div><img src="<%= gravatar %>?s=40&d=mm" class="img-circle" /> <%= name %></div>')
+                        }
+                    })
+                    .bind('typeahead:selected', function (e, datum) {
+                        self.$el.find('input[name="assignee"]').val(datum.id);
+                    });
+            }
+
+            // owner
+            if (self.model.hasPermission('changeOwner')) {
+                $('#txtOwner')
+                    .typeahead(null, {
+                        name: 'owner',
+                        source: new Bloodhound({
+                            queryTokenizer: Bloodhound.tokenizers.whitespace,
+                            datumTokenizer: function (datum) {
+                                return Bloodhound.tokenizers.whitespace(datum.name);
+                            },
+                            identify: function (datum) {
+                                return datum.id;
+                            },
+                            remote: {
+                                url: '/users?name=*',
+                                wildcard: '*',
+                                transform: function (response) {
+                                    return response.users;
+                                }
+                            }
+                        }),
+                        display: function(datum) {
+                            return datum.name;
+                        },
+                        templates: {
+                            notFound: '<span class="empty">' + app.t('No users found') + '</span>',
+                            suggestion: _.template('<div><img src="<%= gravatar %>?s=40&d=mm" class="img-circle" /> <%= name %></div>')
+                        }
+                    })
+                    .bind('typeahead:selected', function (e, datum) {
+                        self.$el.find('input[name="owner"]').val(datum.id);
+                    });
+
+            }
+
+            // project
+            if (self.model.hasPermission('changeProject')) {
+                $('#txtProject')
+                    .typeahead(null, {
+                        name: 'project',
+                        display: 'name',
+                        source: new Bloodhound({
+                            queryTokenizer: Bloodhound.tokenizers.whitespace,
+                            datumTokenizer: function (datum) {
+                                return Bloodhound.tokenizers.whitespace(datum.name);
+                            },
+                            identify: function (datum) {
+                                return datum.id;
+                            },
+                            prefetch: {
+                                cache: false,
+                                url: '/tasks/projects',
+                                transform: function (response) {
+                                    return response.projects;
+                                }
+                            }
+                        }),
+                        templates: {
+                            notFound: '<span class="empty">' + app.t('No projects found') + '</span>',
+                            suggestion: _.template('<div><%= name %></div>')
+                        }
+                    })
+                    .bind('typeahead:selected', function (e, datum) {
+                        self.$el.find('input[name="project"]').val(datum.id);
+                    });
+            }
+        });
         
     },
 

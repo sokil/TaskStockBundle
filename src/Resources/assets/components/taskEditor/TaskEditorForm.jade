@@ -17,11 +17,11 @@ form#taskEditorForm
       label #{t('taskEditor.owner')}
       input(type="hidden", name="owner", value=task.get('owner') ? task.get('owner').id : "")
       input(data-owner, type="text", value=task.get('owner') ? task.get('owner').name : "", class="form-control", id="txtOwner")
-  if (categories.length)
+  if (task.get('category').list.length)
     .form-group
       label #{t('taskEditor.category')}
       select(name="category", class="form-control")
-        each category in categories
+        each category in task.get('category').list
           - var currentCategoryId = task.get('category') ? task.get('category').id : null;
           - var selected=(currentCategoryId == category.get('id'))
           option(value=category.get('id'), selected=selected)= category.get('name')
