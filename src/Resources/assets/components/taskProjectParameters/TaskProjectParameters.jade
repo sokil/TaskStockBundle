@@ -27,6 +27,7 @@ form(action=action, method="POST")
     .form-group
       label= t('task_project_parameters.task_category_schema')
       select.form-control(name="taskСategorySchemaId", value = project.get('categorySchema').id)
+        option(value='')= t('task_project_parameters.no_category_schema')
         each schema in project.get('categorySchema').list
           - var selected = project.get('categorySchema').id === schema['id']
           option(value=schema['id'], selected=selected)= schema['name']
