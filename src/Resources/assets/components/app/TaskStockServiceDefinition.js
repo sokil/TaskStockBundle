@@ -1,10 +1,4 @@
 var TaskStockServiceDefinition = {
-    /**
-     * Get list of task categories
-     */
-    taskCategories: function() {
-        return this.buildFetchablePromise(new TaskCategoryCollection);
-    },
 
     /**
      * Get list of task project roles

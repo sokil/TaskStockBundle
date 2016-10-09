@@ -14,17 +14,10 @@ var TaskCollection = Backbone.Collection.extend({
     fetchPage: function() {
         return this.fetch({
             data: {
-                // category
-                category: this.categories,
                 limit: this.limit,
                 offset: (this.page - 1) * this.limit
             }
         });
-    },
-    
-    setCategories: function(categories) {
-        this.categories = categories;
-        return this;
     },
 
     setLimit: function(limit) {

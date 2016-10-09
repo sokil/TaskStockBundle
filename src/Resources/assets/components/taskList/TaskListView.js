@@ -33,14 +33,5 @@ var TaskListView = Backbone.View.extend({
                 })
                 .render();
         }
-    },
-
-    setCategories: function(categories) {
-        this.collection
-            .setCategories(categories)
-            .setPage(1)
-            .fetchPage();
-    
-        return this;
     }
 });

@@ -14,13 +14,5 @@ var TasksPageView = Marionette.LayoutView.extend({
         });
 
         this.list.show(taskListView);
-
-        // render categories
-        this.categorySelect.show(new TaskCategorySelectView({
-            collection: new TaskCategoryCollection(),
-            change: function(e) {
-                taskListView.setCategories(e.categories);
-            }
-        }));
     }
 });
