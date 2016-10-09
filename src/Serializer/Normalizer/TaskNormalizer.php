@@ -14,6 +14,10 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class TaskNormalizer implements NormalizerInterface
 {
+    const NORMALIZER_GROUP_DEFAULTS = 'defaults';
+    const NORMALIZER_GROUP_EDIT = 'edit';
+    const NORMALIZER_GROUP_VIEW = 'view';
+
     /**
      * @var EntityRepository
      */
@@ -65,42 +69,55 @@ class TaskNormalizer implements NormalizerInterface
             throw new \InvalidArgumentException('Normalized object must be instance of ' . Task::class);
         }
 
-        $permissions = [
+        if (empty($context['groups'])) {
+            $context['groups'] = [];
+        }
+
+        $taskArray = [];
+
+        $taskArray['permissions'] = [
             'edit' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_EDIT, $task),
             'changeProject' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_PROJECT, $task),
             'changeAssignee' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_ASSIGNEE, $task),
             'changeOwner' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_OWNER, $task),
             'viewAttachments' => true,
         ];
+
+        if (in_array(self::NORMALIZER_GROUP_DEFAULTS, $context['groups'])) {
+            return $taskArray;
+        }
         
-        // get category of task
-        $taskCategory = $task->getCategory();
-
-        // get task owner
-        $taskOwner = $task->getOwner();
-
-        // get task assignee
-        $taskAssignee = $task->getAssignee();
-
-        // task project
-        $taskProject = $task->getProject();
-
-        $taskArray = [
+        $taskArray += [
             'id'            => $task->getId(),
             'name'          => $task->getName(),
             'description'   => $task->getDescription(),
             'date'          => $task->getDate('d.m.Y H:i:s'),
-            'owner' => [
+        ];
+
+        // get task owner
+        $taskOwner = $task->getOwner();
+        if ($taskOwner) {
+            $taskArray['owner'] = [
                 'id' => $taskOwner->getId(),
                 'name' => $taskOwner->getName(),
                 'gravatar' => $taskOwner->getGravatarDefaultUrl(),
-            ],
-            'assignee' => $taskAssignee ? [
+            ];
+        }
+
+        // get task assignee
+        $taskAssignee = $task->getAssignee();
+        if ($taskAssignee) {
+            $taskArray['assignee'] = [
                 'id' => $taskAssignee->getId(),
                 'name' => $taskAssignee->getName(),
                 'gravatar' => $taskAssignee->getGravatarDefaultUrl(),
-            ] : null,
-            'project' => $taskProject ? [
+            ];
+        }
+
+        // task project
+        $taskProject = $task->getProject();
+        if ($taskProject) {
+            $taskArray['project'] = [
                 'id' => $taskProject->getId(),
                 'code' => $taskProject->getCode(),
                 'name' => $taskProject->getName(),
@@ -110,11 +127,11 @@ class TaskNormalizer implements NormalizerInterface
                 'notificationSchema' => [
                     'id' => $taskProject->getNotificationSchemaId(),
                 ],
-            ] : null,
-            'permissions' => $permissions,
-        ];
+            ];
+        }
 
         // category
+        $taskCategory = $task->getCategory();
         if ($taskCategory) {
             $taskArray['category'] = [
                 'id' => $taskCategory->getId(),
@@ -122,26 +139,13 @@ class TaskNormalizer implements NormalizerInterface
             ];
         }
 
-        //  allowed categories
-        if (!empty($context['groups']) && in_array('edit', $context['groups'])) {
-
-            $categoryList = $this
-                ->taskCategorySchemaRepository
-                ->find($task->getProject()->getTaskCategorySchemaId())
-                ->getCategories()
-                ->toArray();
-
-            if ($categoryList) {
-                $taskArray['category']['list'] = array_map(
-                    function(TaskCategory $category) {
-                        return [
-                            'id' => $category->getId(),
-                            'name' => $category->getLocalization($this->locale)->getName(),
-                        ];
-                    },
-                    $categoryList
-                );
-            }
+        // add parent task
+        $parentTask = $task->getParent();
+        if ($parentTask) {
+            $taskArray['parent'] = [
+                'id' => $parentTask->getId(),
+                'name' => $parentTask->getName(),
+            ];
         }
 
         // get state handler
@@ -164,49 +168,75 @@ class TaskNormalizer implements NormalizerInterface
             }, $stateHandler->getNextStateTransitions());
         }
 
-        // add sub tasks
-        if (!empty($context['groups']) && in_array('subdtasks', $context['groups'])) {
-            $taskArray['subtasks'] = $task->getSubTasks()->map(function(Task $subTask) {
-                $subtaskData = [
-                    'id' => $subTask->getId(),
-                    'name' => $subTask->getName(),
-                ];
-
-                // sub task state
-                /* @var $stateHandler TaskStateHandler */
-                if ($subTask->hasStates()) {
-                    $stateHandler = $this->taskStateHandlerBuilder->build($subTask);
-                    $subTaskState = $stateHandler->getCurrentState();
-                    $subtaskData['state'] = [
-                        'name'  => $subTaskState->getName(),
-                        'label' => $this->translator->trans($subTaskState->getMetadata('label')),
-                    ];
-                }
-
-                // assignee
-                $assignee = $subTask->getAssignee();
-                if ($assignee) {
-                    $subtaskData['assignee'] =[
-                        'id'        => $assignee->getId(),
-                        'name'      => $assignee->getName(),
-                        'gravatar'  => $assignee->getGravatarDefaultUrl(),
-                    ];
-                }
-
-                return $subtaskData;
-            })->toArray();
+        // dictionaries for editing
+        if (in_array(self::NORMALIZER_GROUP_EDIT, $context['groups'])) {
+            if (true === $taskArray['permissions']['edit']) {
+                $taskArray['edit'] = [];
+                // list of available categories
+                $taskArray['edit']['categories'] = $this->getAvailableTaskCategories($task);
+            }
         }
 
-        // add parent task
-        $parentTask = $task->getParent();
-        if ($parentTask) {
-            $taskArray['parent'] = [
-                'id' => $parentTask->getId(),
-                'name' => $parentTask->getName(),
-            ];
+        if (in_array(self::NORMALIZER_GROUP_VIEW, $context['groups'])) {
+            $taskArray['subtasks'] = $this->getSubTasks($task);
         }
 
         return $taskArray;
+    }
+
+    private function getAvailableTaskCategories(Task $task)
+    {
+        return array_map(
+            function(TaskCategory $category) {
+                return [
+                    'id' => $category->getId(),
+                    'name' => $category->getLocalization($this->locale)->getName(),
+                ];
+            },
+            $this
+                ->taskCategorySchemaRepository
+                ->find($task->getProject()->getTaskCategorySchemaId())
+                ->getCategories()
+                ->toArray()
+        );
+    }
+
+    private function getSubTasks(Task $task)
+    {
+        return $task
+            ->getSubTasks()
+            ->map(
+                function(Task $subTask) {
+                    $subTaskData = [
+                        'id' => $subTask->getId(),
+                        'name' => $subTask->getName(),
+                    ];
+
+                    // sub task state
+                    /* @var $stateHandler TaskStateHandler */
+                    if ($subTask->hasStates()) {
+                        $stateHandler = $this->taskStateHandlerBuilder->build($subTask);
+                        $subTaskState = $stateHandler->getCurrentState();
+                        $subTaskData['state'] = [
+                            'name'  => $subTaskState->getName(),
+                            'label' => $this->translator->trans($subTaskState->getMetadata('label')),
+                        ];
+                    }
+
+                    // assignee
+                    $assignee = $subTask->getAssignee();
+                    if ($assignee) {
+                        $subTaskData['assignee'] =[
+                            'id'        => $assignee->getId(),
+                            'name'      => $assignee->getName(),
+                            'gravatar'  => $assignee->getGravatarDefaultUrl(),
+                        ];
+                    }
+
+                    return $subTaskData;
+                }
+            )
+            ->toArray();
     }
 
     public function supportsNormalization($data, $format = null)

@@ -25,9 +25,7 @@ var TaskView = Marionette.LayoutView.extend({
     initialize: function() {
         this.listenTo(this.model, 'sync', this.renderAsync);
         this.model
-            .fetch({
-                data: {subtasks: true}
-            })
+            .fetch()
             .fail(function() {
                 app.router.navigate('tasks', {trigger: true});
             });

@@ -4,6 +4,7 @@ namespace Sokil\TaskStockBundle\Controller;
 
 use Sokil\TaskStockBundle\Entity\Task;
 use Sokil\TaskStockBundle\Event\TaskChangeEvent;
+use Sokil\TaskStockBundle\Serializer\Normalizer\TaskNormalizer;
 use Sokil\TaskStockBundle\State\TaskStateHandler;
 use Sokil\TaskStockBundle\Voter\TaskVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -135,7 +136,9 @@ class TaskController extends Controller
             }
         } else {
             $task = new Task();
-            $task->setOwner($this->getUser());
+            $task
+                ->setOwner($this->getUser())
+                ->setAssignee($this->getUser());
         }
 
         // authorize
@@ -143,14 +146,20 @@ class TaskController extends Controller
             throw $this->createAccessDeniedException();
         }
 
+        // normalize groups
         $normalizeGroups = [];
-        if ($request->get('subtasks')) {
-            $normalizeGroups[] = 'subdtasks';
-        }
-        if ($request->get('edit')) {
-            $normalizeGroups[] = 'edit';
+        if (empty($id)) {
+            $normalizeGroups[] = TaskNormalizer::NORMALIZER_GROUP_DEFAULTS;
+        } else {
+            $normalizeScenario = $request->get('scenario');
+            if ($normalizeScenario === TaskNormalizer::NORMALIZER_GROUP_EDIT) {
+                $normalizeGroups[] = TaskNormalizer::NORMALIZER_GROUP_EDIT;
+            } else {
+                $normalizeGroups[] = TaskNormalizer::NORMALIZER_GROUP_VIEW;
+            }
         }
 
+        // normalize
         $taskArray = $this
             ->get('task_stock.task_normalizer')
             ->normalize(

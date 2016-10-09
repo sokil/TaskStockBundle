@@ -4,6 +4,14 @@ form#taskEditorForm
       label= t('taskEditor.project')
       input(type="hidden", name="project", value=task.get('project') ? task.get('project').id : "")
       input(data-project, type="text", value=task.get('project') ? task.get('project').name : "", class="form-control", id="txtProject")
+  if (task.get('edit') && task.get('edit').categories)
+    .form-group
+      label #{t('taskEditor.category')}
+      select(name="category", class="form-control")
+        each category in task.get('edit').categories
+          - var currentCategoryId = task.get('category') ? task.get('category').id : null;
+          - var selected=(currentCategoryId == category.id)
+          option(value=category.id, selected=selected)= category.name
   .form-group
     label #{t('taskEditor.name')}
     input(type="text", name="name", value=task.get('name'), class="form-control")
@@ -17,14 +25,6 @@ form#taskEditorForm
       label #{t('taskEditor.owner')}
       input(type="hidden", name="owner", value=task.get('owner') ? task.get('owner').id : "")
       input(data-owner, type="text", value=task.get('owner') ? task.get('owner').name : "", class="form-control", id="txtOwner")
-  if (task.get('category').list)
-    .form-group
-      label #{t('taskEditor.category')}
-      select(name="category", class="form-control")
-        each category in task.get('category').list
-          - var currentCategoryId = task.get('category') ? task.get('category').id : null;
-          - var selected=(currentCategoryId == category.id)
-          option(value=category.id, selected=selected)= category.name
   .form-group
     label #{t('taskEditor.description')}
     textarea(name="description", class="form-control", rows="7")= task.get('description')

@@ -17,13 +17,11 @@ var TaskEditorView = Marionette.ItemView.extend({
         // init model sync
         if (this.model.isNew()) {
             this.listenToOnce(this.model, 'syncDefaults', this.renderAsync);
-            this.model.fetchDefaults({
-                data: {edit: true}
-            });
+            this.model.fetchDefaults();
         } else {
             this.listenToOnce(this.model, 'sync', this.renderAsync);
             this.model.fetch({
-                data: {edit: true}
+                data: {scenario: 'edit'}
             });
         }
     },
