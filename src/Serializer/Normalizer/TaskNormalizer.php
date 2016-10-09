@@ -104,6 +104,12 @@ class TaskNormalizer implements NormalizerInterface
                 'id' => $taskProject->getId(),
                 'code' => $taskProject->getCode(),
                 'name' => $taskProject->getName(),
+                'categorySchema' => [
+                    'id' => $taskProject->getTaskCategorySchemaId(),
+                ],
+                'notificationSchema' => [
+                    'id' => $taskProject->getNotificationSchemaId(),
+                ],
             ] : null,
             'permissions' => $permissions,
         ];
