@@ -14,16 +14,15 @@ var TaskEditorView = Marionette.ItemView.extend({
             this.modal = options.modal;
         }
 
-        // init model sync
-        if (this.model.isNew()) {
-            this.listenToOnce(this.model, 'syncDefaults', this.renderAsync);
-            this.model.fetchDefaults();
-        } else {
-            this.listenToOnce(this.model, 'sync', this.renderAsync);
-            this.model.fetch({
-                data: {scenario: 'edit'}
-            });
-        }
+        // on sync render form
+        this.listenTo(this.model, 'syncDefaults sync', this.renderAsync);
+
+        // fetch model
+        this.model.fetch({
+            data: {
+                scenario: 'edit'
+            }
+        });
     },
 
     onDestroy: function() {
@@ -45,6 +44,9 @@ var TaskEditorView = Marionette.ItemView.extend({
             this.$el.html(app.render('TaskEditorPage'));
             this.$el.find('.content').html(formHTML);
         }
+
+        // remove previously loaded tinymce
+        this.tinymceEditor && this.tinymceEditor.remove();
 
         // init tinymce
         require(['tinymce'], function(tinymce) {
@@ -178,6 +180,10 @@ var TaskEditorView = Marionette.ItemView.extend({
                     })
                     .bind('typeahead:selected', function (e, datum) {
                         self.$el.find('input[name="project"]').val(datum.id);
+                        // fetch updated defaults
+                        self.model.fetch({data: {
+                            project: datum.id
+                        }});
                     });
             }
         });

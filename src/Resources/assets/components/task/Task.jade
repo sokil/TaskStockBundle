@@ -9,7 +9,7 @@ ol.breadcrumb
   .title
     = t('task.task') + " #" + task.get('id') + " "
     if task.get('state')
-      .label.label-primary#taskStateLabel= task.get('state').label
+      .label.label-primary#taskStateLabel= task.get('state').currentState.label
     .pull-right
         |&nbsp;
         span#taskStateSwitcher
@@ -79,7 +79,7 @@ if (task.get('permissions').viewAttachments === true)
       != "&nbsp;" + t('task.newSubtask')
   .content.no-border
     table.table.table-striped.table-hover
-      each subtask in task.get('subtasks')
+      each subtask in task.get('subTasks')
         tr
           td
             a(href="/#tasks/" + subtask.id)= subtask.name

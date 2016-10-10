@@ -54,24 +54,26 @@ var TaskView = Marionette.LayoutView.extend({
         }));
 
         // render task state switcher
-        this.taskStateSwitcher.show(new ButtonGroupView({
-            buttons: this.model.get('nextStates'),
-            buttonClass: 'btn-success',
-            click: function(transitionName) {
-                var groupButtonView = this;
-                $.post('/tasks/' + self.model.get('id') + '/state/' + transitionName)
-                    .done(function(response) {
-                        // re-render state button group
-                        groupButtonView
-                            .setButtons(response.nextStates)
-                            .render();
+        if (this.model.get('state')) {
+            this.taskStateSwitcher.show(new ButtonGroupView({
+                buttons: this.model.get('state').nextStates,
+                buttonClass: 'btn-success',
+                click: function(transitionName) {
+                    var groupButtonView = this;
+                    $.post('/tasks/' + self.model.get('id') + '/state/' + transitionName)
+                        .done(function(response) {
+                            // re-render state button group
+                            groupButtonView
+                                .setButtons(response.nextStates)
+                                .render();
 
-                        // chenge current state label
-                        self.$el.find('#taskStateLabel').text(response.state.label);
-                    })
-                    .fail(function(xhr) {});
-            }
-        }));
+                            // chenge current state label
+                            self.$el.find('#taskStateLabel').text(response.state.label);
+                        })
+                        .fail(function(xhr) {});
+                }
+            }));
+        }
 
         // render comments
         this.comments.show(new TaskCommentsView({

@@ -14,10 +14,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class TaskNormalizer implements NormalizerInterface
 {
-    const NORMALIZER_GROUP_DEFAULTS = 'defaults';
-    const NORMALIZER_GROUP_EDIT = 'edit';
-    const NORMALIZER_GROUP_VIEW = 'view';
-
     /**
      * @var EntityRepository
      */
@@ -39,6 +35,18 @@ class TaskNormalizer implements NormalizerInterface
     private $translator;
 
     private $locale;
+
+    private $availableModificators = [
+        'permissions',
+        'owner',
+        'assignee',
+        'project',
+        'category',
+        'parentTask',
+        'state',
+        'subTasks',
+        'categoryList',
+    ];
 
     /**
      * TaskNormalizer constructor.
@@ -69,123 +77,169 @@ class TaskNormalizer implements NormalizerInterface
             throw new \InvalidArgumentException('Normalized object must be instance of ' . Task::class);
         }
 
+        // get normalization groups
         if (empty($context['groups'])) {
-            $context['groups'] = [];
+            $context['groups'] = $this->availableModificators;
+        } else {
+            $context['groups'] = array_intersect(
+                $context['groups'],
+                $this->availableModificators
+            );
         }
 
-        $taskArray = [];
-
-        $taskArray['permissions'] = [
-            'edit' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_EDIT, $task),
-            'changeProject' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_PROJECT, $task),
-            'changeAssignee' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_ASSIGNEE, $task),
-            'changeOwner' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_OWNER, $task),
-            'viewAttachments' => true,
-        ];
-
-        if (in_array(self::NORMALIZER_GROUP_DEFAULTS, $context['groups'])) {
-            return $taskArray;
-        }
-        
-        $taskArray += [
+        // add normalized data
+        $taskArray = [
             'id'            => $task->getId(),
             'name'          => $task->getName(),
             'description'   => $task->getDescription(),
             'date'          => $task->getDate('d.m.Y H:i:s'),
         ];
 
-        // get task owner
-        $taskOwner = $task->getOwner();
-        if ($taskOwner) {
-            $taskArray['owner'] = [
-                'id' => $taskOwner->getId(),
-                'name' => $taskOwner->getName(),
-                'gravatar' => $taskOwner->getGravatarDefaultUrl(),
-            ];
+        foreach ($context['groups'] as $group) {
+            $taskArray[$group] = call_user_func(
+                [$this, 'get' . $group],
+                $task
+            );
         }
 
-        // get task assignee
-        $taskAssignee = $task->getAssignee();
-        if ($taskAssignee) {
-            $taskArray['assignee'] = [
-                'id' => $taskAssignee->getId(),
-                'name' => $taskAssignee->getName(),
-                'gravatar' => $taskAssignee->getGravatarDefaultUrl(),
-            ];
-        }
-
-        // task project
-        $taskProject = $task->getProject();
-        if ($taskProject) {
-            $taskArray['project'] = [
-                'id' => $taskProject->getId(),
-                'code' => $taskProject->getCode(),
-                'name' => $taskProject->getName(),
-                'categorySchema' => [
-                    'id' => $taskProject->getTaskCategorySchemaId(),
-                ],
-                'notificationSchema' => [
-                    'id' => $taskProject->getNotificationSchemaId(),
-                ],
-            ];
-        }
-
-        // category
-        $taskCategory = $task->getCategory();
-        if ($taskCategory) {
-            $taskArray['category'] = [
-                'id' => $taskCategory->getId(),
-                'name' => $taskCategory->getLocalization($this->locale)->getName(),
-            ];
-        }
-
-        // add parent task
-        $parentTask = $task->getParent();
-        if ($parentTask) {
-            $taskArray['parent'] = [
-                'id' => $parentTask->getId(),
-                'name' => $parentTask->getName(),
-            ];
-        }
-
-        // get state handler
-        /* @var $stateHandler TaskStateHandler */
-        if ($task->hasStates()) {
-            $stateHandler = $this->taskStateHandlerBuilder->build($task);
-            $taskState = $stateHandler->getCurrentState();
-
-            $taskArray['state'] = [
-                'name'  => $taskState->getName(),
-                'label' => $this->translator->trans($taskState->getMetadata('label')),
-            ];
-
-            $taskArray['nextStates'] = array_map(function(\Sokil\State\Transition $transition) {
-                return [
-                    'label' => $this->translator->trans($transition->getMetadata('label')),
-                    'state' => $transition->getResultingStateName(),
-                    'icon' => $transition->getMetadata('icon'),
-                ];
-            }, $stateHandler->getNextStateTransitions());
-        }
-
-        // dictionaries for editing
-        if (in_array(self::NORMALIZER_GROUP_EDIT, $context['groups'])) {
-            if (true === $taskArray['permissions']['edit']) {
-                $taskArray['edit'] = [];
-                // list of available categories
-                $taskArray['edit']['categories'] = $this->getAvailableTaskCategories($task);
-            }
-        }
-
-        if (in_array(self::NORMALIZER_GROUP_VIEW, $context['groups'])) {
-            $taskArray['subtasks'] = $this->getSubTasks($task);
-        }
-
-        return $taskArray;
+        return array_filter($taskArray);
     }
 
-    private function getAvailableTaskCategories(Task $task)
+    private function getOwner(Task $task)
     {
+        // get task owner
+        $taskOwner = $task->getOwner();
+        if (!$taskOwner) {
+            return;
+        }
+
+        return [
+            'id' => $taskOwner->getId(),
+            'name' => $taskOwner->getName(),
+            'gravatar' => $taskOwner->getGravatarDefaultUrl(),
+        ];
+    }
+
+    private function getAssignee(Task $task)
+    {
+        $taskAssignee = $task->getAssignee();
+        if (!$taskAssignee) {
+            return;
+        }
+
+        return [
+            'id' => $taskAssignee->getId(),
+            'name' => $taskAssignee->getName(),
+            'gravatar' => $taskAssignee->getGravatarDefaultUrl(),
+        ];
+    }
+
+    private function getProject(Task $task)
+    {
+        $taskProject = $task->getProject();
+        if (!$taskProject) {
+            return;
+        }
+
+        return [
+            'id' => $taskProject->getId(),
+            'code' => $taskProject->getCode(),
+            'name' => $taskProject->getName(),
+            'categorySchema' => [
+                'id' => $taskProject->getTaskCategorySchemaId(),
+            ],
+            'notificationSchema' => [
+                'id' => $taskProject->getNotificationSchemaId(),
+            ],
+        ];
+    }
+
+    private function getParentTask(Task $task)
+    {
+        $parentTask = $task->getParent();
+        if (!$parentTask) {
+            return;
+        }
+
+        return [
+            'id' => $parentTask->getId(),
+            'name' => $parentTask->getName(),
+        ];
+    }
+
+    private function getState(Task $task)
+    {
+        /* @var $stateHandler TaskStateHandler */
+        if (!$task->hasStates()) {
+            return;
+        }
+
+        $stateHandler = $this->taskStateHandlerBuilder->build($task);
+        $taskState = $stateHandler->getCurrentState();
+
+        return [
+            'currentState' => [
+                'name'  => $taskState->getName(),
+                'label' => $this->translator->trans($taskState->getMetadata('label')),
+            ],
+            'nextStates' => array_map(
+                function(\Sokil\State\Transition $transition) {
+                    return [
+                        'label' => $this->translator->trans($transition->getMetadata('label')),
+                        'state' => $transition->getResultingStateName(),
+                        'icon' => $transition->getMetadata('icon'),
+                    ];
+                },
+                $stateHandler->getNextStateTransitions()
+            ),
+        ];
+
+    }
+
+    private function getCategory(Task $task)
+    {
+        $taskCategory = $task->getCategory();
+        if (!$taskCategory) {
+            return;
+        }
+
+        return [
+            'id' => $taskCategory->getId(),
+            'name' => $taskCategory->getLocalization($this->locale)->getName(),
+        ];
+    }
+
+    private function getPermissions(Task $task)
+    {
+        return [
+            'edit' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_EDIT, $task),
+            'changeProject' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_PROJECT, $task),
+            'changeAssignee' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_ASSIGNEE, $task),
+            'changeOwner' => $this->authorizationChecker->isGranted(TaskVoter::PERMISSION_CHANGE_OWNER, $task),
+            'viewAttachments' => true,
+        ];
+    }
+
+    private function getCategoryList(Task $task)
+    {
+        $project = $task->getProject();
+        if (!$project) {
+            return null;
+        }
+
+        $categorySchemaId = $project->getTaskCategorySchemaId();
+        if (!$categorySchemaId) {
+            return null;
+        }
+
+        $categorySchema = $this
+            ->taskCategorySchemaRepository
+            ->find($categorySchemaId);
+
+        if (!$categorySchema) {
+            return null;
+        }
+
         return array_map(
             function(TaskCategory $category) {
                 return [
@@ -193,11 +247,7 @@ class TaskNormalizer implements NormalizerInterface
                     'name' => $category->getLocalization($this->locale)->getName(),
                 ];
             },
-            $this
-                ->taskCategorySchemaRepository
-                ->find($task->getProject()->getTaskCategorySchemaId())
-                ->getCategories()
-                ->toArray()
+            $categorySchema->getCategories()->toArray()
         );
     }
 

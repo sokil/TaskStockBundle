@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -127,10 +128,7 @@ class TaskController extends Controller
 
         // get task
         if ($id) {
-            $task = $this->getDoctrine()
-                ->getRepository('TaskStockBundle:Task')
-                ->find($id);
-
+            $task = $this->getDoctrine()->getRepository('TaskStockBundle:Task')->find($id);
             if (!$task || $task->isDeleted()) {
                 throw new NotFoundHttpException('Task not found');
             }
@@ -146,16 +144,39 @@ class TaskController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        // normalize groups
-        $normalizeGroups = [];
-        if (empty($id)) {
-            $normalizeGroups[] = TaskNormalizer::NORMALIZER_GROUP_DEFAULTS;
+        $projectId = $request->get('project');
+        if (is_numeric($projectId) && $projectId > 0) {
+            $project = $this
+                ->getDoctrine()
+                ->getManager()
+                ->getReference('TaskStockBundle:TaskProject', $projectId);
+
+            $task->setProject($project);
+            $normalizeGroups = [
+                'project',
+                'category',
+                'categoryList',
+            ];
+        } else if (empty($id)) {
+            $normalizeGroups = [
+                'permissions',
+            ];
         } else {
             $normalizeScenario = $request->get('scenario');
-            if ($normalizeScenario === TaskNormalizer::NORMALIZER_GROUP_EDIT) {
-                $normalizeGroups[] = TaskNormalizer::NORMALIZER_GROUP_EDIT;
+            if ($normalizeScenario === 'edit') {
+                $normalizeGroups = [];
             } else {
-                $normalizeGroups[] = TaskNormalizer::NORMALIZER_GROUP_VIEW;
+                $normalizeGroups = [
+                    'commonParams',
+                    'permissions',
+                    'owner',
+                    'assignee',
+                    'project',
+                    'category',
+                    'parentTask',
+                    'state',
+                    'subTasks',
+                ];
             }
         }
 

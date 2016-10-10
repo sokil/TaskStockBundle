@@ -4,11 +4,11 @@ form#taskEditorForm
       label= t('taskEditor.project')
       input(type="hidden", name="project", value=task.get('project') ? task.get('project').id : "")
       input(data-project, type="text", value=task.get('project') ? task.get('project').name : "", class="form-control", id="txtProject")
-  if (task.get('edit') && task.get('edit').categories)
+  if (task.get('categoryList'))
     .form-group
       label #{t('taskEditor.category')}
       select(name="category", class="form-control")
-        each category in task.get('edit').categories
+        each category in task.get('categoryList')
           - var currentCategoryId = task.get('category') ? task.get('category').id : null;
           - var selected=(currentCategoryId == category.id)
           option(value=category.id, selected=selected)= category.name
