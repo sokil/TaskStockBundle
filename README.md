@@ -7,6 +7,7 @@ Task tracker bundle
     * [Basic bundle configuration](#basic-bundle-configuration)
     * [Configuring SPA](#configuring-spa)
     * [Configuring file storage](#configuring-file-storage)
+    * [Configuring task states](#configuring-task-states)
 
 ## Installation
 
@@ -141,4 +142,55 @@ Then add this filesystem to bundle's config at `./app/config/config.yml`:
 ```yaml
 task_stock:
    attachments_filesystem: "task_stock.attachments"
+```
+
+### Configuring task states
+
+Task belongs to some category: `Bug`, `Enhancement`, `Feature`, `Design`, etc. Different categories of tasks may have different state flows. Bug may have states `New`, `In Progres`, `Test`, `Resolved`, and `Design` may have states `New`, `Prototyping`, `Drawing`, `Markup`, `Resolved`. This groups of states called `Schema`. Task with category `Design` may be related to `Drawing schema`, and tasks `Bug`, `Feature` may be relared to `Development` schema.
+
+Add schema configuration to your `./app/config/config.yaml`:
+
+```yaml
+taskStock:
+   stateConfig:
+      - id: 0
+        name: Development
+        states:
+          new:
+            label: task_status_new
+            initial: true
+            transitions:
+              to_in_progress:
+                resultingState: in_progress
+                label: task_transiotion_open
+                icon: glyphicon glyphicon-play
+              to_rejected:
+                resultingState: rejected
+                label: task_transiotion_reject
+                icon: glyphicon glyphicon-ban-circle
+          in_progress:
+            label: task_status_in_progress
+            transitions:
+              to_resolved:
+                resultingState: resolved
+                   label: task_transiotion_resolve
+                   icon: glyphicon glyphicon-ok
+                 to_rejected:
+                   resultingState: rejected
+                   label: task_transiotion_reject
+                   icon: glyphicon glyphicon-ban-circle
+             rejected:
+               label: task_status_rejected
+               transitions:
+                 to_in_progress:
+                   resultingState: in_progress
+                   label: task_transiotion_reopen
+                   icon: glyphicon glyphicon-repeat
+             resolved:
+               label: task_status_resolved
+               transitions:
+                 to_in_progress:
+                   resultingState: in_progress
+                   label: task_transiotion_reopen
+                   icon: glyphicon glyphicon-repeat
 ```
