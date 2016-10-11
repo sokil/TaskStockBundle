@@ -96,6 +96,12 @@ services:
         - '@translator'
         - %locale%
 
+    task_stock.task_category_normalizer:
+      class: Sokil\TaskStockBundle\Serializer\Normalizer\TaskCategoryNormalizer
+      arguments:
+        - '@task_stock.task_state_handler_builder'
+        - %locales%
+
     task_stock.task_project_normalizer:
       class: Sokil\TaskStockBundle\Serializer\Normalizer\TaskProjectNormalizer
       arguments:

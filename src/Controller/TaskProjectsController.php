@@ -136,11 +136,6 @@ class TaskProjectsController extends Controller
             $project->setNotificationSchemaId($notificationSchemaId);
         }
 
-        $stateSchemaId = $request->get('stateSchemaId');
-        if (is_numeric($stateSchemaId)) {
-            $project->setStateSchemaId($stateSchemaId);
-        }
-
         $taskСategorySchemaId = $request->get('taskСategorySchemaId');
         if (is_numeric($taskСategorySchemaId)) {
             $project->setTaskCategorySchemaId($taskСategorySchemaId);

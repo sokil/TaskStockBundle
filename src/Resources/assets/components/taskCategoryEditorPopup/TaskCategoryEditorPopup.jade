@@ -1,4 +1,12 @@
 form(action=action, method="POST")
+  if (category.get('stateSchema'))
+    .form-group
+      label= t('task_category.state_schema')
+      select.form-control(name="stateSchemaId", value = category.get('stateSchema').id)
+        option(value="")= t('task_category.no_state_schema')
+        each schema in category.get('stateSchema').list
+          - var selected = category.get('stateSchema').id === schema['id']
+          option(value=schema['id'], selected=selected)= schema['name']
   ul.nav.nav-pills.bottom-space
     each locale in app.locales
       li(class=(locale === app.locale) ? "active" : null)

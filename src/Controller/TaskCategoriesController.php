@@ -53,23 +53,11 @@ class TaskCategoriesController extends Controller
             throw new NotFoundHttpException;
         }
 
-        $response = [
-            'id'    => $taskCategory->getId(),
-        ];
-
-        $localizations = $taskCategory->getLocalizations();
-
-        foreach($this->container->getParameter('locales') as $locale) {
-            if (isset($localizations[$locale])) {
-                $response['name'][$locale] = $localizations[$locale]->getName();
-                $response['description'][$locale] = $localizations[$locale]->getDescription();
-            } else {
-                $response['name'][$locale] = '';
-                $response['description'][$locale] = '';
-            }
-        }
+        $taskCategoryArray = $this
+            ->get('task_stock.task_category_normalizer')
+            ->normalize($taskCategory);
         
-        return new JsonResponse($response);
+        return new JsonResponse($taskCategoryArray);
     }
 
     /**
@@ -103,7 +91,13 @@ class TaskCategoriesController extends Controller
         $em->getConnection()->beginTransaction();
 
         try {
-            // common fields
+            // set state schema
+            $stateSchemaId = $request->get('stateSchemaId');
+            if (is_numeric($stateSchemaId)) {
+                $taskCategory->setStateSchemaId($stateSchemaId);
+            }
+
+            // save
             $em->persist($taskCategory);
             $em->flush();
             

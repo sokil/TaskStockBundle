@@ -46,8 +46,8 @@ class TaskStateHandlerBuilder
     protected function getTaskStateConfiguration(Task $task)
     {
         // get task state schema id
-        $stateSchemaId = $task->getProject()->getStateSchemaId();
-        if (empty($stateSchemaId)) {
+        $stateSchemaId = $task->getCategory()->getStateSchemaId();
+        if (null === $stateSchemaId) {
             throw new \Exception('Task has no related state configuration');
         }
 

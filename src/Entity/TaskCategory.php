@@ -31,7 +31,12 @@ class TaskCategory implements LocalizedInterface
      * )
      */
     protected $localizations;
-    
+
+    /**
+     * @ORM\Column(type="integer", name="state_schema_id", nullable=true)
+     */
+    protected $stateSchemaId;
+
     /**
      * Constructor
      */
@@ -96,5 +101,21 @@ class TaskCategory implements LocalizedInterface
     public function getLocalizations()
     {
         return $this->localizations;
+    }
+
+    public function getStateSchemaId()
+    {
+        return $this->stateSchemaId;
+    }
+
+    public function setStateSchemaId($id)
+    {
+        if (!is_numeric($id)) {
+            throw new \InvalidArgumentException('State schema id must be numeric');
+        }
+
+        $this->stateSchemaId = (int) $id;
+
+        return $this;
     }
 }

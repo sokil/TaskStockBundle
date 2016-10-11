@@ -60,11 +60,6 @@ class TaskProject
     protected $notificationSchemaId;
 
     /**
-     * @ORM\Column(type="integer", name="state_schema_id", nullable=true)
-     */
-    protected $stateSchemaId;
-
-    /**
      * @ORM\Column(type="integer", name="task_category_schema_id", nullable=true)
      */
     protected $taskCategorySchemaId;
@@ -218,22 +213,6 @@ class TaskProject
         } else {
             $this->notificationSchemaId = null;
         }
-
-        return $this;
-    }
-
-    public function getStateSchemaId()
-    {
-        return $this->stateSchemaId;
-    }
-
-    public function setStateSchemaId($id)
-    {
-        if (!is_numeric($id)) {
-            throw new \InvalidArgumentException('State schema id must be numeric');
-        }
-
-        $this->stateSchemaId = (int) $id;
 
         return $this;
     }

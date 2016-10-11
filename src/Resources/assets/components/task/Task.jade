@@ -1,44 +1,49 @@
-ol.breadcrumb
+ul.list-inline
+  if task.get('state')
+    li
+      .label.label-primary#taskStateLabel= task.get('state').currentState.label
+  if task.get('category')
+    li
+      .label.label-info= task.get('category').name
+  li
+    span#taskStateSwitcher
+  li.visible-xs
+    .btn-group
+      button.btn.btn-default.btn-xs.dropdown-toggle(data-toggle="dropdown")
+        span.glyphicon.glyphicon-cog
+        |&nbsp
+        span.caret
+      ul.dropdown-menu.dropdown-menu-right
+        li
+          a(href="/#tasks/" + task.id + "/edit")
+            = t('Edit')
+        li
+          a.deleteTask
+            = t('Delete')
+  li.hidden-xs
+    a.btn.btn-default.btn-xs(href="/#tasks/" + task.id + "/edit")
+      span.glyphicon.glyphicon-pencil
+      |&nbsp
+      = t('Edit')
+    |&nbsp;
+    a.btn.btn-default.btn-xs.deleteTask
+      span.glyphicon.glyphicon-trash
+      |&nbsp
+      = t('Delete')
+
+
+ul.list-inline
   li
     a(href="/#")= task.get('project').name
-  if task.get('parent')
+  if task.get('parentTask')
     li
-      a(href="/#tasks/" + task.get('parent').id)= task.get('parent').name
+      a(href="/#tasks/" + task.get('parentTask').id)= task.get('parentTask').name.substr(0, 20)
+  li
+    a(href="/#tasks/" + task.get('id'))= t('task.task') + " #" + task.get('id')
 
 .block.top-space
-  .title
-    = t('task.task') + " #" + task.get('id') + " "
-    if task.get('state')
-      .label.label-primary#taskStateLabel= task.get('state').currentState.label
-    .pull-right
-        |&nbsp;
-        span#taskStateSwitcher
-      .pull-right
-        .visible-xs
-          .btn-group
-            button.btn.btn-default.btn-xs.dropdown-toggle(data-toggle="dropdown")
-              span.glyphicon.glyphicon-cog
-              |&nbsp
-              span.caret
-            ul.dropdown-menu.dropdown-menu-right
-              li
-                a(href="/#tasks/" + task.id + "/edit")
-                  = t('Edit')
-              li
-                a.deleteTask
-                  = t('Delete')
-        .hidden-xs
-          a.btn.btn-default.btn-xs(href="/#tasks/" + task.id + "/edit")
-            span.glyphicon.glyphicon-pencil
-            |&nbsp
-            = t('Edit')
-          |&nbsp;
-          a.btn.btn-default.btn-xs.deleteTask
-            span.glyphicon.glyphicon-trash
-            |&nbsp
-            = t('Delete')
+  .title= task.get('name')
   .content
-    h2= task.get('name')
     ul.list-inline
       li
         = t('task.createdAt') + ":"
@@ -78,45 +83,46 @@ if (task.get('permissions').viewAttachments === true)
       span.glyphicon.glyphicon-plus
       != "&nbsp;" + t('task.newSubtask')
   .content.no-border
-    table.table.table-striped.table-hover
-      each subtask in task.get('subTasks')
-        tr
-          td
-            a(href="/#tasks/" + subtask.id)= subtask.name
-          if subtask.state
+    if (task.get('subTasks'))
+      table.table.table-striped.table-hover
+        each subtask in task.get('subTasks')
+          tr
             td
-              .label.label-primary= subtask.state.label
-          td.hidden-xs
-            if subtask.assignee
-              a(href="/#users/" + subtask.assignee.id)
-                img.img-circle(src=subtask.assignee.gravatar + "?s=20&d=mm")
-              |&nbsp;
-              a(href="/#users/" + subtask.assignee.id)
-                = subtask.assignee.name
-            else
-              = t('task.unassigned')
-          td.text-right
-            .hidden-xs
-              a.btn.btn-default.btn-xs.editSubTask(data-id=subtask.id)
-                span.glyphicon.glyphicon-pencil
-                |&nbsp
-                = t('Edit')
-              | &nbsp;
-              a.btn.btn-default.btn-xs.deleteSubTask(data-id=subtask.id)
-                span.glyphicon.glyphicon-trash
-                |&nbsp
-                = t('Delete')
-            .visible-xs
-              .btn-group
-                button.btn.btn-default.btn-xs.dropdown-toggle(data-toggle="dropdown")
-                  span.glyphicon.glyphicon-cog
+              a(href="/#tasks/" + subtask.id)= subtask.name
+            if subtask.state
+              td
+                .label.label-primary= subtask.state.label
+            td.hidden-xs
+              if subtask.assignee
+                a(href="/#users/" + subtask.assignee.id)
+                  img.img-circle(src=subtask.assignee.gravatar + "?s=20&d=mm")
+                |&nbsp;
+                a(href="/#users/" + subtask.assignee.id)
+                  = subtask.assignee.name
+              else
+                = t('task.unassigned')
+            td.text-right
+              .hidden-xs
+                a.btn.btn-default.btn-xs.editSubTask(data-id=subtask.id)
+                  span.glyphicon.glyphicon-pencil
                   |&nbsp
-                  span.caret
-                ul.dropdown-menu.dropdown-menu-right
-                  li
-                    a.editSubTask(data-id=subtask.id)= t('Edit')
-                  li
-                    a.deleteSubTask(data-id=subtask.id)= t('Delete')
+                  = t('Edit')
+                | &nbsp;
+                a.btn.btn-default.btn-xs.deleteSubTask(data-id=subtask.id)
+                  span.glyphicon.glyphicon-trash
+                  |&nbsp
+                  = t('Delete')
+              .visible-xs
+                .btn-group
+                  button.btn.btn-default.btn-xs.dropdown-toggle(data-toggle="dropdown")
+                    span.glyphicon.glyphicon-cog
+                    |&nbsp
+                    span.caret
+                  ul.dropdown-menu.dropdown-menu-right
+                    li
+                      a.editSubTask(data-id=subtask.id)= t('Edit')
+                    li
+                      a.deleteSubTask(data-id=subtask.id)= t('Delete')
 
 .block.top-space
   .title

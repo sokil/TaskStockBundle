@@ -2,10 +2,10 @@
 
 namespace Sokil\TaskStockBundle\Serializer\Normalizer;
 
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Sokil\TaskStockBundle\Entity\TaskCategorySchema;
 use Sokil\TaskStockBundle\Entity\TaskProject;
 use Sokil\TaskStockBundle\State\TaskStateHandlerBuilder;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
@@ -15,11 +15,6 @@ class TaskProjectNormalizer implements NormalizerInterface
      * @var EntityRepository
      */
     private $taskCategorySchemaRepository;
-
-    /**
-     * @var TaskStateHandlerBuilder
-     */
-    private $taskStateHandlerBuilder;
 
     /**
      * @var AuthorizationChecker
@@ -32,7 +27,6 @@ class TaskProjectNormalizer implements NormalizerInterface
         AuthorizationChecker $authorizationChecker
     ) {
         $this->taskCategorySchemaRepository = $taskProjectRepository;
-        $this->taskStateHandlerBuilder = $taskStateHandlerBuilder;
         $this->authorizationChecker = $authorizationChecker;
     }
 
@@ -56,28 +50,10 @@ class TaskProjectNormalizer implements NormalizerInterface
             ],
         ];
 
-        // notification
+        // notification schema
         $notificationSchemaId = $taskProject->getNotificationSchemaId();
         if ($notificationSchemaId) {
             $taskProjectArray['notificationSchemaId'] = $notificationSchemaId;
-        }
-
-        // state configurations
-        $stateSchemas = array_map(
-            function($stateSchema) {
-                return [
-                    'id' => $stateSchema['id'],
-                    'name' => $stateSchema['name'],
-                ];
-            },
-            $this->taskStateHandlerBuilder->getStateConfigurations()
-        );
-
-        if ($stateSchemas) {
-            $taskProjectArray['stateSchema'] = [
-                'id' => $taskProject->getStateSchemaId(),
-                'list' => $stateSchemas,
-            ];
         }
 
         // category schema
