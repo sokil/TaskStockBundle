@@ -1,12 +1,12 @@
 li.media.bottom-space
   .media-left
-    a(href="/#users/" + comment.get('author').id)
-      img.img-circle.media-object(src=comment.get('author').gravatar + "?s=40&d=mm")
+    a(href="/#users/" + comment.author.id)
+      img.img-circle.media-object(src=comment.author.gravatar + "?s=40&d=mm")
   .media-body
     .media-heading
-      a(href="/#users/" + comment.get('author').id)= comment.get('author').name
+      a(href="/#users/" + comment.author.id)= comment.author.name
       |&nbsp;
-      span.hidden-xs.hidden-sm= moment(comment.getDate()).format('LLLL')
+      span.hidden-xs.hidden-sm= comment.date.text
       |&nbsp;
-      span(title=moment(comment.getDate()).format('LLLL'))= "(" + moment(comment.getDate()).fromNow() + ")"
-    = comment.get('text')
+      span(title=comment.date.text)= "(" + comment.date.fromNow + ")"
+    = comment.text

@@ -95,6 +95,8 @@ class TaskCategoriesController extends Controller
             $stateSchemaId = $request->get('stateSchemaId');
             if (is_numeric($stateSchemaId)) {
                 $taskCategory->setStateSchemaId($stateSchemaId);
+            } elseif ('' === $stateSchemaId) {
+                $taskCategory->setNoStateSchema();
             }
 
             // save

@@ -118,4 +118,10 @@ class TaskCategory implements LocalizedInterface
 
         return $this;
     }
+
+    public function setNoStateSchema()
+    {
+        $this->stateSchemaId = null;
+        return $this;
+    }
 }
