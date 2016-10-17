@@ -101,9 +101,13 @@ This bundle uses [FrontendBundle](https://github.com/sokil/FrontendBundle) for b
         options.router.processAppRoutes(taskStockRouter, taskStockRouter.routes);
         // container
         options.container = new Container(_.extend(
-                {},
-                TaskStockServiceDefinition
+            {},
+            TaskStockServiceDefinition
         ));
+        // requirejs
+        options.requireJs = [
+            TaskStockRequireJsConfig
+        ];
         // start app
         window.app = new Application(options);
         window.app.start();

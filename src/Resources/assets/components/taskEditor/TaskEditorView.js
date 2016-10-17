@@ -49,7 +49,7 @@ var TaskEditorView = Marionette.ItemView.extend({
         this.tinymceEditor && this.tinymceEditor.remove();
 
         // init tinymce
-        require(['tinymce'], function(tinymce) {
+        require(['taskstock_tinymce'], function(tinymce) {
             // init
             tinymce.init({
                 selector: '#taskEditorForm [name="description"]',
@@ -81,7 +81,10 @@ var TaskEditorView = Marionette.ItemView.extend({
             '/bundles/taskstock/css/typeahead.css'
         ]);
 
-        require(['typeahead', 'bloodhound'], function() {
+        require([
+            'taskstock_typeahead',
+            'taskstock_bloodhound'
+        ], function() {
             if (self.model.hasPermission('changeAssignee')) {
                 // assignee
                 $('#txtAssignee')

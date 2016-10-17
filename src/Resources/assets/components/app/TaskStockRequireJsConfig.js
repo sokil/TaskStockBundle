@@ -1,20 +1,20 @@
 var TaskStockRequireJsConfig = {
     paths: {
-        'tinymce': 'taskstock/js/tinymce/tinymce.min',
-        'typeahead': 'taskstock/js/typeahead/typeahead.jquery.min',
-        'bloodhound': 'taskstock/js/typeahead/bloodhound.min'
+        'taskstock_tinymce': 'taskstock/js/tinymce/tinymce.min',
+        'taskstock_typeahead': 'taskstock/js/typeahead/typeahead.jquery.min',
+        'taskstock_bloodhound': 'taskstock/js/typeahead/bloodhound.min'
     },
     shim: {
-        'tinymce': {
+        'taskstock_tinymce': {
             exports: 'tinymce'
         },
-        'typeahead': {
+        'taskstock_typeahead': {
             deps: ['jquery'],
             init: function ($) {
                 return require.s.contexts._.registry['typeahead.js'].factory( $ );
             }
         },
-        'bloodhound': {
+        'taskstock_bloodhound': {
             deps: ['jquery'],
             exports: 'Bloodhound'
         }
