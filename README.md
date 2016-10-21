@@ -1,5 +1,8 @@
 # TaskStockBundle
 
+[![Total Downloads](http://img.shields.io/packagist/dt/sokil/task-stock-bundle.svg)](https://packagist.org/packages/sokil/task-stock-bundle)
+[![Daily Downloads](https://poser.pugx.org/sokil/task-stock-bundle/d/daily)](https://packagist.org/packages/sokil/task-stock-bundle)
+
 Task tracker bundle
 
 * [Installation](#installation)
