@@ -163,7 +163,7 @@ class TaskCategoriesController extends Controller
 
         // persist
         $em = $this->getDoctrine()->getManager();
-        $em->remove($taskCategory);
+        $em->persist($taskCategory);
 
         // flush
         try {
