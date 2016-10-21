@@ -44,7 +44,11 @@ var TaskCategoryListView = Backbone.View.extend({
         var model = collection.add({id: $btn.data('id')});
 
         // delete
-        model.on('sync', function() {
+        model.on('sync', function(model, response) {
+            if (response.error === 1) {
+                alert(response.message);
+                return;
+            }
             $btn.closest('tr').remove();
         });
         model.destroy();
