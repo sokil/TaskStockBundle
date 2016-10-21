@@ -18,7 +18,7 @@ class TaskCategoryRepository extends EntityRepository
                 SELECT tc.id, tcl.name, tcl.description
                 FROM TaskStockBundle:TaskCategory tc
                 LEFT JOIN TaskStockBundle:TaskCategoryLocalization tcl WITH tcl.taskCategory = tc.id
-                WHERE tcl.lang = :lang
+                WHERE tc.deleted = 0 AND tcl.lang = :lang
                 ORDER BY tcl.name
             ')
             ->setParameters([
