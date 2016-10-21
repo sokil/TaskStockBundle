@@ -157,16 +157,21 @@ class TaskCategoriesController extends Controller
         if (!$taskCategory) {
             throw new NotFoundHttpException;
         }
-        
-        // remove
+
+        // delete
+        $taskCategory->delete();
+
+        // persist
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($taskCategory);
+
+        // flush
         try {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($taskCategory);
             $em->flush();
-            return new JsonResponse(['error' => 0]);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 1, 'message' => $e->getMessage()]);
         }
 
+        return new JsonResponse(['error' => 0]);
     }
 }

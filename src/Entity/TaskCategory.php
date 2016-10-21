@@ -37,6 +37,12 @@ class TaskCategory implements LocalizedInterface
      */
     protected $stateSchemaId;
 
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $deleted = false;
+
     /**
      * Constructor
      */
@@ -123,5 +129,34 @@ class TaskCategory implements LocalizedInterface
     {
         $this->stateSchemaId = null;
         return $this;
+    }
+
+    /**
+     * Delete user
+     * @return Task
+     */
+    public function delete()
+    {
+        $this->deleted = true;
+        return $this;
+    }
+
+    /**
+     * Undelete user
+     * @return Task
+     */
+    public function undelete()
+    {
+        $this->deleted = false;
+        return $this;
+    }
+
+    /**
+     * Check if user is deleted
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->deleted;
     }
 }
