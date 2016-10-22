@@ -16,7 +16,7 @@ form(action=action, method="POST")
         each schema in notificationSchemas
           - var selected = project.get('notificationSchemaId') === schema.get('id')
           option(value=schema.get('id'), selected=selected)= schema.get('name')
-  if (project.get('categorySchema').list.length > 0)
+  if (project.get('categorySchema'))
     .form-group
       label= t('task_project_parameters.task_category_schema')
       select.form-control(name="taskСategorySchemaId", value = project.get('categorySchema').id)
