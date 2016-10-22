@@ -9,8 +9,12 @@ var TaskListView = Backbone.View.extend({
     },
 
     renderAsync: function() {
-        var self = this;
-        
+        // show empty list
+        if (this.collection.models.length  === 0) {
+            this.$el.html(app.render('TaskListEmpty'));
+            return;
+        }
+
         // render page
         this.$el.html(app.render('TaskList', {
             tasks: this.collection.models
@@ -25,6 +29,7 @@ var TaskListView = Backbone.View.extend({
                 currentPage: this.collection.page
             });
 
+            var self = this;
             pagination
                 .on('change', function(e) {
                     self.collection
