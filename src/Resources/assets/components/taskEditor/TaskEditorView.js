@@ -78,12 +78,12 @@ var TaskEditorView = Marionette.ItemView.extend({
         });
 
         app.loadCss([
-            '/bundles/taskstock/css/typeahead.css'
+            '/bundles/frontend/css/typeahead.css'
         ]);
 
         require([
-            'taskstock_typeahead',
-            'taskstock_bloodhound'
+            'typeahead',
+            'bloodhound'
         ], function() {
             if (self.model.hasPermission('changeAssignee')) {
                 // assignee

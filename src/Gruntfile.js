@@ -31,13 +31,6 @@ module.exports = function (grunt) {
                         "Resources/assets/components/**/*.less"
                     ]
                 }
-            },
-            typeahead: {
-                files: {
-                    "Resources/public/css/typeahead.css": [
-                        "Resources/assets/css/typeahead.less"
-                    ]
-                }
             }
         },
         jade: {
@@ -101,15 +94,6 @@ module.exports = function (grunt) {
                     '**'
                 ],
                 dest: 'Resources/public/js/tinymce'
-            },
-            typeahead: {
-                expand: true,
-                cwd: 'bower_components/typeahead.js/dist/',
-                src: [
-                    'typeahead.jquery.min.js',
-                    'bloodhound.min.js'
-                ],
-                dest: 'Resources/public/js/typeahead'
             }
         },
         watch: {

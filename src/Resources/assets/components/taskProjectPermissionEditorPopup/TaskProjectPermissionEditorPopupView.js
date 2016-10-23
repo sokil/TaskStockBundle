@@ -27,34 +27,40 @@ var TaskProjectPermissionEditorPopupView = PopupView.extend({
             }));
 
             // init user typeahead
-            self.$el.find('[data-user]')
-                .typeahead(null, {
-                    name: 'user',
-                    display: 'name',
-                    source: new Bloodhound({
-                        queryTokenizer: Bloodhound.tokenizers.whitespace,
-                        datumTokenizer: function (datum) {
-                            return Bloodhound.tokenizers.whitespace(datum.name);
-                        },
-                        identify: function (datum) {
-                            return datum.id;
-                        },
-                        remote: {
-                            url: '/users?name=*',
-                            wildcard: '*',
-                            transform: function (response) {
-                                return response.users;
+            require([
+                'typeahead',
+                'bloodhound'
+            ], function() {
+                self.$el.find('[data-user]')
+                    .typeahead(null, {
+                        name: 'user',
+                        display: 'name',
+                        source: new Bloodhound({
+                            queryTokenizer: Bloodhound.tokenizers.whitespace,
+                            datumTokenizer: function (datum) {
+                                return Bloodhound.tokenizers.whitespace(datum.name);
+                            },
+                            identify: function (datum) {
+                                return datum.id;
+                            },
+                            remote: {
+                                url: '/users?name=*',
+                                wildcard: '*',
+                                transform: function (response) {
+                                    return response.users;
+                                }
                             }
+                        }),
+                        templates: {
+                            notFound: '<span class="empty">' + app.t('No users found') + '</span>',
+                            suggestion: _.template('<div><img src="<%= gravatar %>?s=40&d=mm" class="img-circle" /> <%= name %></div>')
                         }
-                    }),
-                    templates: {
-                        notFound: '<span class="empty">' + app.t('No users found') + '</span>',
-                        suggestion: _.template('<div><img src="<%= gravatar %>?s=40&d=mm" class="img-circle" /> <%= name %></div>')
-                    }
-                })
-                .bind('typeahead:selected', function (e, datum) {
-                    self.$el.find('input[name="user"]').val(datum.id);
-                });
+                    })
+                    .bind('typeahead:selected', function (e, datum) {
+                        self.$el.find('input[name="user"]').val(datum.id);
+                    });
+
+            });
         });
 
     },
