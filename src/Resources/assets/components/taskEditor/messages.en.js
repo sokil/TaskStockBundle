@@ -5,6 +5,7 @@ i18n.addMessages({
     'taskEditor.owner': 'Task owner',
     'taskEditor.assignee': 'Assignee',
     'taskEditor.category': 'Category',
+    'taskEditor.category.no_option': 'Choose category',
     'taskEditor.location': 'Location',
-    'taskEditor.description': 'Description'
+    'taskEditor.description': 'Description',
 });

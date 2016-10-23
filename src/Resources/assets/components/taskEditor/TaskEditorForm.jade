@@ -8,6 +8,7 @@ form#taskEditorForm
     .form-group
       label #{t('taskEditor.category')}
       select(name="category", class="form-control")
+        option(value='', selected=selected)= t('taskEditor.category.no_option')
         each category in task.get('categoryList')
           - var currentCategoryId = task.get('category') ? task.get('category').id : null;
           - var selected=(currentCategoryId == category.id)
