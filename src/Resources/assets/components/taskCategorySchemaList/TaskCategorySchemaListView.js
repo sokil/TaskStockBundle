@@ -9,8 +9,8 @@ var TaskCategorySchemaListView = Backbone.View.extend({
         this.collection.fetch();
     },
 
-    render: function() {
-
+    reload: function() {
+        this.collection.fetch();
     },
 
     renderAsync: function() {
@@ -37,7 +37,7 @@ var TaskCategorySchemaListView = Backbone.View.extend({
         app.popup(new TaskCategorySchemaEditorPopupView({
             model: model,
             afterSave: function() {
-                self.render();
+                self.reload();
             }
         }));
     },

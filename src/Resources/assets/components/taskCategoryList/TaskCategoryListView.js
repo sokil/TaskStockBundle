@@ -4,8 +4,12 @@ var TaskCategoryListView = Backbone.View.extend({
         'click .delete': 'deleteButtonClickListener'
     },
 
-    render: function() {
+    initialize: function() {
         this.listenTo(this.collection, 'sync', this.renderAsync);
+        this.collection.fetch();
+    },
+
+    reload: function() {
         this.collection.fetch();
     },
 
@@ -30,7 +34,7 @@ var TaskCategoryListView = Backbone.View.extend({
         app.popup(new TaskCategoryEditorPopupView({
             model: model,
             afterSave: function() {
-                self.render();
+                self.reload();
             }
         }));
     },
