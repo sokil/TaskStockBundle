@@ -6,6 +6,7 @@ var TaskStockRouter = Marionette.AppRouter.extend({
         "tasks/:id/edit": "editTaskAction",
         "tasks/:id": "taskAction",
         "taskCategories": "taskCategoriesAction",
+        "taskCategorySchemas": "taskCategorySchemasAction",
         "projects": "taskProjectsAction",
         "projects/:id": "taskProjectAction",
     },
@@ -32,6 +33,10 @@ var TaskStockRouter = Marionette.AppRouter.extend({
         app.rootView.content.show(new TaskEditorView({
             model: model
         }));
+    },
+
+    taskCategorySchemasAction: function() {
+        app.rootView.content.show(new TaskCategorySchemasPageView());
     },
 
     taskCategoriesAction: function() {

@@ -1,44 +1,11 @@
 {% macro jsResources() %}
     {% javascripts
         '@TaskStockBundle/Resources/public/js/components.jade.js'
+        '@TaskStockBundle/Resources/assets/components/*/*.js'
+        '@TaskStockBundle/Resources/assets/models/*/*.js'
 
-        '@TaskStockBundle/Resources/assets/components/app/TaskStockRouter.js'
-        '@TaskStockBundle/Resources/assets/components/app/TaskStockServiceDefinition.js'
-        '@TaskStockBundle/Resources/assets/components/app/TaskStockRequireJsConfig.js'
-
-        '@TaskStockBundle/Resources/assets/models/task/Task.js'
-        '@TaskStockBundle/Resources/assets/models/task/TaskCollection.js'
-        '@TaskStockBundle/Resources/assets/models/taskComment/TaskComment.js'
-        '@TaskStockBundle/Resources/assets/models/taskComment/TaskCommentCollection.js'
-        '@TaskStockBundle/Resources/assets/models/taskAttachment/TaskAttachment.js'
-        '@TaskStockBundle/Resources/assets/models/taskAttachment/TaskAttachmentCollection.js'
-        '@TaskStockBundle/Resources/assets/models/taskCategory/TaskCategory.js'
-        '@TaskStockBundle/Resources/assets/models/taskCategory/TaskCategoryCollection.js'
-        '@TaskStockBundle/Resources/assets/models/taskProject/TaskProject.js'
-        '@TaskStockBundle/Resources/assets/models/taskProject/TaskProjectCollection.js'
-        '@TaskStockBundle/Resources/assets/models/taskProjectPermission/TaskProjectPermission.js'
-        '@TaskStockBundle/Resources/assets/models/taskProjectPermission/TaskProjectPermissionCollection.js'
         '@NotificationBundle/Resources/assets/models/notificationSchema/NotificationSchema.js'
         '@NotificationBundle/Resources/assets/models/notificationSchema/NotificationSchemaCollection.js'
-
-        '@TaskStockBundle/Resources/assets/components/taskList/TaskListView.js'
-        '@TaskStockBundle/Resources/assets/components/taskCategoriesPage/TaskCategoriesPageView.js'
-        '@TaskStockBundle/Resources/assets/components/taskCategoryEditorPopup/TaskCategoryEditorPopupView.js'
-        '@TaskStockBundle/Resources/assets/components/taskCategoryList/TaskCategoryListView.js'
-        '@TaskStockBundle/Resources/assets/components/taskProject/TaskProjectView.js'
-        '@TaskStockBundle/Resources/assets/components/taskProjectsPage/TaskProjectsPageView.js'
-        '@TaskStockBundle/Resources/assets/components/taskProjectParameters/TaskProjectParametersView.js'
-        '@TaskStockBundle/Resources/assets/components/taskProjectPermissions/TaskProjectPermissionsView.js'
-        '@TaskStockBundle/Resources/assets/components/taskProjectPermissionEditorPopup/TaskProjectPermissionEditorPopupView.js'
-        '@TaskStockBundle/Resources/assets/components/taskProjectEditorPopup/TaskProjectEditorPopupView.js'
-        '@TaskStockBundle/Resources/assets/components/taskProjectList/TaskProjectListView.js'
-        '@TaskStockBundle/Resources/assets/components/tasksPage/TasksPageView.js'
-        '@TaskStockBundle/Resources/assets/components/taskEditor/TaskEditorView.js'
-        '@TaskStockBundle/Resources/assets/components/taskEditor/TaskEditorPopupView.js'
-        '@TaskStockBundle/Resources/assets/components/task/TaskView.js'
-        '@TaskStockBundle/Resources/assets/components/taskComments/TaskCommentsView.js'
-        '@TaskStockBundle/Resources/assets/components/taskCommentForm/TaskCommentFormView.js'
-        '@TaskStockBundle/Resources/assets/components/taskAttachments/TaskAttachmentsView.js'
     %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
