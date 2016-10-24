@@ -29,7 +29,7 @@ var TaskCategorySchemaEditorPopupView = PopupView.extend({
 
     getEditorHtml: function() {
         return app.render('TaskCategorySchemaEditorPopup', {
-            category: this.model
+            schema: this.model
         });
     },
 

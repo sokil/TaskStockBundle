@@ -22,7 +22,7 @@ var TaskCategorySchemaListView = Backbone.View.extend({
 
         // show list
         this.$el.html(app.render('TaskCategorySchemaList', {
-            categories: this.collection.models
+            schemas: this.collection.models
         }));
     },
 

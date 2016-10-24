@@ -1,7 +1,7 @@
 var TaskCategorySchemaCollection = Backbone.Collection.extend({
-    model: TaskCategory,
+    model: TaskCategorySchema,
     url: '/tasks/categorySchemas',
     parse: function(response) {
-        return response.categories;
+        return response.schemas;
     }
 });

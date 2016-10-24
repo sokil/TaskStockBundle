@@ -29,10 +29,12 @@ class TaskCategorySchema
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+     *
      * @ORM\ManyToMany(
      *  targetEntity="Sokil\TaskStockBundle\Entity\TaskCategory",
      *  indexBy="id",
      * )
+     *
      * @ORM\JoinTable(
      *     name="task_category_schema_categories",
      *     joinColumns={@ORM\JoinColumn(name="schema_id", referencedColumnName="id")},

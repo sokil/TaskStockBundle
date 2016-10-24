@@ -1,5 +1,5 @@
 form(action=action, method="POST")
   .form-group
     label Name
-    input.form-control(name="name[" + locale + "]", value = category.get('name') ? category.get('name')[locale] : null)
+    input.form-control(name="name", value = schema.get('name') ? schema.get('name') : null)
 .status
