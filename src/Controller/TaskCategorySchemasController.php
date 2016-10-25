@@ -30,7 +30,9 @@ class TaskCategorySchemasController extends Controller
         $schemas = $this
             ->getDoctrine()
             ->getRepository('TaskStockBundle:TaskCategorySchema')
-            ->findAll();
+            ->findBy([
+                'deleted' => 0,
+            ]);
 
         return new JsonResponse([
             'schemas' => array_map(function(TaskCategorySchema $schema) use ($lang) {
@@ -124,5 +126,45 @@ class TaskCategorySchemasController extends Controller
             'error' => 0,
             'id' => $taskCategorySchema->getId(),
         ]);
+    }
+
+    /**
+     * @Route("/tasks/categorySchemas/{id}", name="delete_task_category_schema")
+     * @Method({"DELETE"})
+     */
+    public function deleteAction(Request $request, $id)
+    {
+        // check access
+        if (!$this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $taskCategorySchema = $this
+            ->getDoctrine()
+            ->getRepository('TaskStockBundle:TaskCategorySchema')
+            ->find($id);
+
+        if (!$taskCategorySchema) {
+            throw new NotFoundHttpException;
+        }
+
+        // delete
+        $taskCategorySchema->delete();
+
+        // persist
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($taskCategorySchema);
+
+        // flush
+        try {
+            $em->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error' => 1,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return new JsonResponse(['error' => 0]);
     }
 }

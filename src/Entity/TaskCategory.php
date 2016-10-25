@@ -37,7 +37,6 @@ class TaskCategory implements LocalizedInterface
      */
     protected $stateSchemaId;
 
-
     /**
      * @ORM\Column(type="boolean")
      */
