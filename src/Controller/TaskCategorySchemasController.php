@@ -122,6 +122,7 @@ class TaskCategorySchemasController extends Controller
 
         return new JsonResponse([
             'error' => 0,
+            'id' => $taskCategorySchema->getId(),
         ]);
     }
 }

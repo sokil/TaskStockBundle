@@ -7,10 +7,15 @@ var TaskCategorySchemasPageView = Marionette.LayoutView.extend({
         content: '.content'
     },
 
+    collection: null,
+
     initialize: function() {
+
+        this.collection = new TaskCategorySchemaCollection();
+
         // render list
         this.listView = new TaskCategorySchemaListView({
-            collection: new TaskCategorySchemaCollection()
+            collection: this.collection
         });
     },
 
@@ -25,8 +30,7 @@ var TaskCategorySchemasPageView = Marionette.LayoutView.extend({
         var self = this;
 
         // get model
-        var collection = new TaskCategorySchemaCollection();
-        var model = collection.add({});
+        var model = this.collection.add({});
 
         // render popup
         app.popup(new TaskCategorySchemaEditorPopupView({

@@ -30,8 +30,7 @@ var TaskCategorySchemaListView = Backbone.View.extend({
         var self = this;
 
         // get model
-        var collection = new TaskCategorySchemaCollection();
-        var model = collection.add({id: $(e.currentTarget).data('id')});
+        var model = this.collection.add({id: $(e.currentTarget).data('id')});
 
         // render popup
         app.popup(new TaskCategorySchemaEditorPopupView({
@@ -47,8 +46,7 @@ var TaskCategorySchemaListView = Backbone.View.extend({
             $btn = $(e.currentTarget);
 
         // get model
-        var collection = new TaskCategorySchemaCollection();
-        var model = collection.add({id: $btn.data('id')});
+        var model = this.collection.add({id: $btn.data('id')});
 
         // delete
         model.on('sync', function(model, response) {
