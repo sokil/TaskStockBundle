@@ -2,7 +2,7 @@ table.table.table-striped.table-hover
     colgroup
         col
         col
-        col(width="100px")
+        col(width="250px")
     tr
         th= t('task_category_schema_list.table_head_id')
         th= t('task_category_schema_list.table_head_name')
@@ -11,7 +11,11 @@ table.table.table-striped.table-hover
         tr
             td= schema.get('id')
             td= schema.get('name')
-            td
-                a.btn.btn-xs.btn-success.edit(data-id=schema.get('id'))= t('task_category_schema_list.edit_btn')
-                | 
-                a.btn.btn-xs.btn-danger.delete(data-id=schema.get('id'))= t('task_category_schema_list.delete_btn')
+            td.text-right
+                ul.list-inline
+                    li
+                        a.btn.btn-xs.btn-info.categories(data-id=schema.get('id'))= t('task_category_schema_list.categories_btn')
+                    li
+                        a.btn.btn-xs.btn-success.edit(data-id=schema.get('id'))= t('task_category_schema_list.edit_btn')
+                    li
+                        a.btn.btn-xs.btn-danger.delete(data-id=schema.get('id'))= t('task_category_schema_list.delete_btn')
