@@ -23,12 +23,23 @@ class TaskCategoriesController extends Controller
         if (!$this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             throw $this->createAccessDeniedException();
         }
-        
+
+        $categoriesRepository = $this
+            ->getDoctrine()
+            ->getRepository('TaskStockBundle:TaskCategory');
+
+        $filter = $request->get('filter');
+        $locale = $request->getLocale();
+        if (!empty($filter['schemaId'])) {
+            $categories = $categoriesRepository
+                ->getBySchema($locale, $filter['schemaId'])
+                ->getArrayResult();
+        } else {
+            $categories = $categoriesRepository->getAllAsArray($locale);
+        }
+
         return new JsonResponse([
-            'categories' => $this
-                ->getDoctrine()
-                ->getRepository('TaskStockBundle:TaskCategory')
-                ->getAllAsArray($request->getLocale()),
+            'categories' => $categories,
         ]);
     }
 

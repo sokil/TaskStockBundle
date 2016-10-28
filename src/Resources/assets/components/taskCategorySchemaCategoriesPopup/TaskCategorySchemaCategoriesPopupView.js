@@ -11,10 +11,11 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
     ],
 
     init: function(params) {
+        var categoryCollection = new TaskCategoryCollection();
+
         this.setBody(new MultiTypeaheadView({
             typeahead: {
                 prefetch: {
-                    url: '/tasks/categories',
                     transform: function (response) {
                         return response.categories;
                     }

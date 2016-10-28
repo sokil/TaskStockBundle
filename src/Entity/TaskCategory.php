@@ -43,6 +43,13 @@ class TaskCategory implements LocalizedInterface
     protected $deleted = false;
 
     /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Sokil\TaskStockBundle\Entity\TaskCategorySchema",
+     *     mappedBy="categories"
+     * )
+     */
+    protected $schemas;
+    /**
      * Constructor
      */
     public function __construct()
