@@ -1,39 +1,47 @@
 var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
 
-    events: {
-        'click .save': 'saveButtonClickListener'
-    },
+    events: {},
 
     title: 'Task Category Schema',
 
-    buttons: [
-        {class: 'btn-primary save', title: 'Save'}
-    ],
+    buttons: [],
 
     init: function(params) {
-        var categoryCollection = new TaskCategoryCollection();
-
-        this.setBody(new MultiTypeaheadView({
-            typeahead: {
-                prefetch: {
-                    transform: function (response) {
-                        return response.categories;
-                    }
-                }
-            },
-            list: {
-                collection: new Backbone.Collection([{name: 'hello1', id: 1}, {name: 'hello2', 'id': 2}]),
-                modelValue: function(model) {
-                    return model.get('name');
-                },
-                modelId: function(model) {
-                    return model.id;
-                }
+        // create filtered collection
+        var categoryCollection = new TaskCategoryCollection({
+            filter: {
+                schemaId: params.schemaId
             }
-        }));
-    },
+        });
 
-    saveButtonClickListener: function() {
+        // sync filtered collection
+        categoryCollection.fetch();
 
+        // on collection sync - render
+        this.listenTo(
+            categoryCollection,
+            'sync',
+            function() {
+                this.setBody(new MultiTypeaheadView({
+                    typeahead: {
+                        prefetch: {
+                            url: '/tasks/categories',
+                            transform: function (response) {
+                                return response.categories;
+                            }
+                        }
+                    },
+                    list: {
+                        collection: categoryCollection,
+                        modelValue: function(model) {
+                            return model.get('name');
+                        },
+                        modelId: function(model) {
+                            return model.id;
+                        }
+                    }
+                }));
+            }
+        );
     }
 });

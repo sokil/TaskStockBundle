@@ -61,8 +61,11 @@ var TaskCategorySchemaListView = Backbone.View.extend({
     },
 
     categoriesButtonClickListener: function(e) {
+        var $btn = $(e.currentTarget),
+            schemaId = $btn.data('id');
+
         app.popup(new TaskCategorySchemaCategoriesPopupView({
-            schemaId: this.model.id
+            schemaId: schemaId
         }));
     }
 });
