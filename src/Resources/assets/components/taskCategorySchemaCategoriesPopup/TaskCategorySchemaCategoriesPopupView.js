@@ -38,7 +38,18 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
                         },
                         modelId: function(model) {
                             return model.id;
-                        }
+                        },
+                        buttons: [
+                            {
+                                name: 'delete',
+                                class: 'btn btn-danger btn-xs',
+                                icon: 'glyphicon glyphicon-trash',
+                                caption: app.t('task_category_schema_list.delete_btn'),
+                                click: function() {
+                                    alert('delete');
+                                }
+                            }
+                        ]
                     }
                 }));
             }
