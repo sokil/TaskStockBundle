@@ -1,7 +1,8 @@
 var TaskCategorySchemaListView = Backbone.View.extend({
     events: {
         'click .edit': 'editButtonClickListener',
-        'click .delete': 'deleteButtonClickListener'
+        'click .delete': 'deleteButtonClickListener',
+        'click .categories': 'categoriesButtonClickListener'
     },
 
     initialize: function() {
@@ -57,6 +58,9 @@ var TaskCategorySchemaListView = Backbone.View.extend({
             $btn.closest('tr').remove();
         });
         model.destroy();
-        
+    },
+
+    categoriesButtonClickListener: function(e) {
+        app.popup(new TaskCategorySchemaCategoriesPopupView());
     }
 });
