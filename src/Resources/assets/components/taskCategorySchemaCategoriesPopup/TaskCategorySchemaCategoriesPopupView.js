@@ -24,11 +24,20 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
             function() {
                 this.setBody(new MultiTypeaheadView({
                     typeahead: {
+                        display: function(datum) {
+                            return datum.name;
+                        },
+                        datumTokenizer: function(datum) {
+                            return Bloodhound.tokenizers.whitespace(datum.name);
+                        },
                         prefetch: {
                             url: '/tasks/categories',
                             transform: function (response) {
                                 return response.categories;
                             }
+                        },
+                        templates: {
+                            suggestion: _.template('<div><%= name %></div>'),
                         }
                     },
                     list: {
