@@ -33,12 +33,12 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
                     },
                     list: {
                         collection: categoryCollection,
-                        modelValue: function(model) {
-                            return model.get('name');
-                        },
-                        modelId: function(model) {
-                            return model.id;
-                        },
+                        columns: [
+                            {
+                                name: 'name',
+                                caption: app.t('task_category_schema_categories.column.category_name')
+                            }
+                        ],
                         buttons: [
                             {
                                 name: 'delete',
@@ -46,7 +46,7 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
                                 icon: 'glyphicon glyphicon-trash',
                                 caption: app.t('task_category_schema_list.delete_btn'),
                                 click: function() {
-                                    alert('delete');
+
                                 }
                             }
                         ]
