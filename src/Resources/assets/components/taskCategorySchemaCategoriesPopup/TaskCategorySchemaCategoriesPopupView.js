@@ -54,8 +54,10 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
                                 class: 'btn btn-danger btn-xs',
                                 icon: 'glyphicon glyphicon-trash',
                                 caption: app.t('task_category_schema_list.delete_btn'),
-                                click: function() {
-
+                                click: function(e, multiTypeaheadView) {
+                                    var $btn = $(this);
+                                    var id = $btn.data('delete');
+                                    multiTypeaheadView.remove(id);
                                 }
                             }
                         ]
