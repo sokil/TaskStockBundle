@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TaskCategorySchemasController extends Controller
@@ -21,7 +22,7 @@ class TaskCategorySchemasController extends Controller
     public function listAction(Request $request)
     {
         // check access
-        if (!$this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if (!$this->isGranted('ROLE_TASK_MANAGER')) {
             throw $this->createAccessDeniedException();
         }
 
@@ -58,7 +59,7 @@ class TaskCategorySchemasController extends Controller
     public function getAction(Request $request, $id)
     {
         // check access
-        if (!$this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if (!$this->isGranted('ROLE_TASK_MANAGER')) {
             throw $this->createAccessDeniedException();
         }
 
@@ -95,7 +96,7 @@ class TaskCategorySchemasController extends Controller
     public function saveAction(Request $request, $id = null)
     {
         // check access
-        if (!$this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if (!$this->isGranted('ROLE_TASK_MANAGER')) {
             throw $this->createAccessDeniedException();
         }
 
@@ -135,7 +136,7 @@ class TaskCategorySchemasController extends Controller
     public function deleteAction(Request $request, $id)
     {
         // check access
-        if (!$this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if (!$this->isGranted('ROLE_TASK_MANAGER')) {
             throw $this->createAccessDeniedException();
         }
 
@@ -166,5 +167,69 @@ class TaskCategorySchemasController extends Controller
         }
 
         return new JsonResponse(['error' => 0]);
+    }
+
+    /**
+     * @Route(
+     *     "/tasks/categorySchemas/{schemaId}/categories",
+     *     name="task_category_schema_categories_add"
+     * )
+     * @Method({"POST", "PUT"})
+     */
+    public function addCategoriesAction(
+        Request $request,
+        $schemaId
+    ) {
+        // check access
+        if (!$this->isGranted('ROLE_TASK_MANAGER')) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $taskCategorySchema = $this
+            ->getDoctrine()
+            ->getRepository('TaskStockBundle:TaskCategorySchema')
+            ->find($schemaId);
+
+        if (!$taskCategorySchema) {
+            throw new NotFoundHttpException;
+        }
+
+        $categoryIds = $request->get('categories');
+        if (!$categoryIds || !is_array($categoryIds)) {
+            throw new BadRequestHttpException('Category ids not specified');
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        foreach ($categoryIds as $categoryId) {
+            $taskCategorySchema->addCategory(
+                $entityManager->getReference(
+                    'TaskStockBundle:TaskCategory',
+                    $categoryId
+                )
+            );
+        }
+
+        try {
+            $entityManager->persist($taskCategorySchema);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error' => 1,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return new JsonResponse([
+            'error' => 0,
+        ]);
+    }
+
+    public function deleteCategoriesAction($schemaId)
+    {
+        // check access
+        if (!$this->isGranted('ROLE_TASK_MANAGER')) {
+            throw $this->createAccessDeniedException();
+        }
     }
 }
