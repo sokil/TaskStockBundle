@@ -225,11 +225,55 @@ class TaskCategorySchemasController extends Controller
         ]);
     }
 
-    public function deleteCategoriesAction($schemaId)
-    {
+    /**
+     * @Route(
+     *     "/tasks/categorySchemas/{schemaId}/categories/{categoryId}",
+     *     name="task_category_schema_categories_delete"
+     * )
+     * @Method({"DELETE"})
+     *
+     * @param $schemaId
+     * @param $categoryId
+     */
+    public function deleteCategoriesAction(
+        Request $request,
+        $schemaId,
+        $categoryId
+    ) {
         // check access
         if (!$this->isGranted('ROLE_TASK_MANAGER')) {
             throw $this->createAccessDeniedException();
         }
+
+        $taskCategorySchema = $this
+            ->getDoctrine()
+            ->getRepository('TaskStockBundle:TaskCategorySchema')
+            ->find($schemaId);
+
+        if (!$taskCategorySchema) {
+            throw new NotFoundHttpException;
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $taskCategorySchema->removeCategory(
+            $entityManager->getReference(
+                'TaskStockBundle:TaskCategory',
+                $categoryId
+            )
+        );
+
+        try {
+            $entityManager->persist($taskCategorySchema);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error' => 1,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return new JsonResponse([
+            'error' => 0,
+        ]);
     }
 }
