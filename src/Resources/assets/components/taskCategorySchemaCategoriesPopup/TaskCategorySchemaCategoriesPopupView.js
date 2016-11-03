@@ -7,6 +7,10 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
     buttons: [],
 
     init: function(params) {
+        if (!params.schemaId) {
+            throw Error('Schema not specified');
+        }
+
         // create filtered collection
         var categoryCollection = new TaskCategoryCollection({
             filter: {
@@ -32,7 +36,12 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
                     suggestion: _.template('<div><%= name %></div>'),
                 },
                 onSelect: function(model) {
-                    
+                    $.post(
+                        '/tasks/categorySchemas/' + params.schemaId + '/categories',
+                        {
+                            categories: [model.id]
+                        }
+                    );
                 }
             },
             list: {
@@ -51,8 +60,16 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
                         caption: app.t('task_category_schema_list.delete_btn'),
                         click: function(e, listView) {
                             var $btn = $(this);
-                            var id = $btn.data('delete');
-                            listView.remove(id);
+                            var categoryId = $btn.data('delete');
+                            // delete link
+                            $.ajax({
+                                url: '/tasks/categorySchemas/' + params.schemaId + '/categories/' + categoryId,
+                                type: 'DELETE',
+                                success: function() {
+                                    // delete list item
+                                    listView.remove(categoryId);
+                                }
+                            });
                         }
                     }
                 ]
