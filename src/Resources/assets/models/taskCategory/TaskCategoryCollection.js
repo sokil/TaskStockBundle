@@ -2,24 +2,33 @@ var TaskCategoryCollection = Backbone.Collection.extend({
 
     model: TaskCategory,
 
-    url: function() {
-        var url = '/tasks/categories';
-
-        // add filter
-        if (this.filter) {
-            url += '?' + $.param({filter: this.filter});
-        }
-
-        return url;
-    },
+    url: '/tasks/categories',
 
     filter: null,
+
+    initialize: function(params) {
+        if (params.filter) {
+            this.filter = params.filter;
+        }
+    },
 
     parse: function(response) {
         return response.categories;
     },
 
-    initialize: function(params) {
-        this.filter = params.filter;
+    fetch: function(options) {
+        options = options || {};
+        if (this.filter) {
+            _.extend(
+                options,
+                {
+                    data: {
+                        filter: this.filter
+                    }
+                }
+            );
+        }
+
+        return Backbone.Collection.prototype.fetch.call(this, options);
     }
 });
