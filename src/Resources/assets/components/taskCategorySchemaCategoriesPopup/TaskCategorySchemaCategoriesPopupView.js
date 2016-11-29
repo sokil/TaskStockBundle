@@ -58,10 +58,7 @@ var TaskCategorySchemaCategoriesPopupView = PopupView.extend({
                         class: 'btn btn-danger btn-xs',
                         icon: 'glyphicon glyphicon-trash',
                         caption: app.t('task_category_schema_list.delete_btn'),
-                        click: function(e, listView) {
-                            var $btn = $(this);
-                            var categoryId = $btn.data('delete');
-                            // delete link
+                        click: function(e, categoryId, listView) {
                             $.ajax({
                                 url: '/tasks/categorySchemas/' + params.schemaId + '/categories/' + categoryId,
                                 type: 'DELETE',
