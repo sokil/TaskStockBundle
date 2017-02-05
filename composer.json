@@ -30,5 +30,10 @@
     },
     "suggest": {
         "sokil/deploy-bundle": "Deploy symfony2 apps"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.3-dev"
+        }
     }
 }
